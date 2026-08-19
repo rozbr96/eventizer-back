@@ -7,6 +7,9 @@ api:
 db:
 	@${DOCKER} up -d db
 
+tests: api
+	@${DOCKER} exec api npm test
+
 bash: api
 	@${DOCKER} exec api bash
 
@@ -22,3 +25,11 @@ logs.api:
 logs.db:
 	@${DOCKER} logs -f db
 
+prisma.generate:
+	@${DOCKER} run --rm npx prisma generate
+
+prisma.push:
+	@${DOCKER} run --rm npx prisma db push
+
+prisma.pull:
+	@${DOCKER} run --rm npx prisma db pull
