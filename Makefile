@@ -7,6 +7,9 @@ api:
 db:
 	@${DOCKER} up -d db
 
+tests: api
+	@${DOCKER} exec api npm test
+
 bash: api
 	@${DOCKER} exec api bash
 
