@@ -25,3 +25,11 @@ logs.api:
 logs.db:
 	@${DOCKER} logs -f db
 
+prisma.generate:
+	@${DOCKER} run --rm npx prisma generate
+
+prisma.push:
+	@${DOCKER} run --rm npx prisma db push
+
+prisma.pull:
+	@${DOCKER} run --rm npx prisma db pull
