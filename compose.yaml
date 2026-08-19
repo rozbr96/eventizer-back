@@ -1,0 +1,39 @@
+
+services:
+  node: &node
+    user: 1000:1000
+    image: node:24.19
+    working_dir: /app
+    volumes:
+      - ./:/app/
+
+  npm: &npm
+    <<: *node
+    entrypoint: npm
+
+  setup:
+    <<: *npm
+    command: install
+
+  api:
+    <<: *npm
+    command: run dev
+    env_file: .env
+    ports:
+      - 3000:3000
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  db:
+    image: postgres:18
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
