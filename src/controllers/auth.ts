@@ -40,7 +40,7 @@ const signup = (req: Request, resp: Response) => {
     .execute(req.body)
     .then(() => {
       new CreateUserTokenUseCase(userTokenRepository)
-        .execute({ email: req.body.email })
+        .execute({ email: req.body.email, name: req.body.name, role: 'client' })
         .then(() => { resp.end() })
     })
     .catch((err) => { resp.status(400).json(err) })

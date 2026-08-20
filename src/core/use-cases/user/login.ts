@@ -28,7 +28,7 @@ export class LoginUserUseCase {
       if (!user.active) return reject({ detail: 'Inactive User' })
 
       new CreateUserTokenUseCase(this.userTokenRepository)
-        .execute({ email: props.email })
+        .execute({ email: props.email, role: user.role, name: user.name })
         .then((token) => {
           this.userTokenRepository
             .set(props.email, token)
