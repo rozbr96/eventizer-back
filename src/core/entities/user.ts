@@ -12,6 +12,10 @@ export interface UserCreation extends BaseUser {
   password: string
 }
 
+export interface UserEdition {
+  active?: boolean
+}
+
 export interface UserRetrieval extends BaseUser {
   id: number | string
 }

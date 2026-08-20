@@ -1,16 +1,13 @@
 
 import request from 'supertest'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import app from '@/app.js'
 import prismaClient from '@/prisma/client.js'
-import { truncate } from '@test/prisma/helpers.js'
-
+import redisClient from '@/redis/client.js'
 
 describe('POST /auth/signup', () => {
-  beforeEach(async () => { await truncate(prismaClient) })
-
-  it('creates an user', async () => {
+  it('creates an user and its first token', async () => {
     const { status } = await request(app).post('/auth/signup').send({
       name: 'John Doe',
       password: 'password',
@@ -18,6 +15,8 @@ describe('POST /auth/signup', () => {
     })
 
     const user = await prismaClient.user.findUnique({ where: { email: 'john.doe@email.com' } })
+    const token = await redisClient.get('john.doe@email.com')
+    const tokenTtl = await redisClient.ttl('john.doe@email.com')
 
     expect(status).toBe(200)
     expect(user).toMatchObject({
@@ -27,6 +26,10 @@ describe('POST /auth/signup', () => {
       active: false,
       role: 'client'
     })
+
+    expect(token).not.toBeNull()
+    expect(tokenTtl).toBeGreaterThanOrEqual(3590)
+    expect(tokenTtl).toBeLessThanOrEqual(3600)
   })
 
   it('creates an inactive client user regardless of incoming role and active data', async () => {
