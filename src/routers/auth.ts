@@ -18,6 +18,11 @@ const userActivationSchema = zod.object({
   token: zod.string().nonempty({ error: 'Cannot be blank' })
 })
 
+const userLoginSchema = zod.object({
+  email: zod.email(),
+  password: zod.string().nonempty({ error: 'Cannot be blank' })
+})
+
 router.post('/signup', [
   bodyValidation(userSignupSchema),
 ], authController.signup)
@@ -25,5 +30,9 @@ router.post('/signup', [
 router.post('/activate', [
   bodyValidation(userActivationSchema)
 ], authController.activate)
+
+router.post('/login', [
+  bodyValidation(userLoginSchema),
+], authController.login)
 
 export default router
