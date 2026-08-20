@@ -28,12 +28,19 @@ services:
     depends_on:
       setup:
         condition: service_completed_successfully
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:18
     restart: always
     environment:
       POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   adminer:
     image: adminer
