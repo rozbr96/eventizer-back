@@ -28,4 +28,18 @@ describe('POST /auth/signup', () => {
       role: 'client'
     })
   })
+
+  it('creates an inactive client user regardless of incoming role and active data', async () => {
+    await request(app).post('/auth/signup').send({
+      name: 'John Doe',
+      password: 'password',
+      email: 'john.doe@email.com',
+      active: true,
+      role: 'organizer'
+    })
+
+    const user = await prismaClient.user.findUnique({ where: { email: 'john.doe@email.com' } })
+
+    expect(user).toMatchObject({ active: false, role: 'client' })
+  })
 })
