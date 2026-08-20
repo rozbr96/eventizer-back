@@ -1,7 +1,7 @@
 
 import prismaClient from '@/prisma/client.js'
 
-import type { UserCreation, UserRetrieval } from '@/core/entities/index.js'
+import type { UserCreation, UserEdition, UserRetrieval } from '@/core/entities/index.js'
 import { UserRepository } from '@/core/repositories/user.js'
 
 export default class extends UserRepository {
@@ -20,6 +20,16 @@ export default class extends UserRepository {
       prismaClient
         .user
         .findUnique({ where: { email } })
+        .then(resolve)
+        .catch(reject)
+    })
+  }
+
+  update(email: string, data: UserEdition): Promise<UserRetrieval> {
+    return new Promise((resolve, reject) => {
+      prismaClient
+        .user
+        .update({ where: { email }, data })
         .then(resolve)
         .catch(reject)
     })
