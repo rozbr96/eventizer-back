@@ -1,13 +1,10 @@
 
-import { beforeEach, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import prismaClient from '@/prisma/client.js'
 import UserRepository from '@/prisma/repositories/user.js'
-import { truncate } from '@test/prisma/helpers.js'
 
 describe('UserRepository', () => {
-  beforeEach(async () => { await truncate(prismaClient) })
-
   it('creates an user', async () => {
     const userRepository = new UserRepository()
 

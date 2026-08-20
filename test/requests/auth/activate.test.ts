@@ -1,16 +1,12 @@
 
 import request from 'supertest'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import app from '@/app.js'
 import prismaClient from '@/prisma/client.js'
 import redisClient from '@/redis/client.js'
-import { truncate } from '@test/prisma/helpers.js'
-
 
 describe('POST /auth/activate', () => {
-  beforeEach(async () => { await truncate(prismaClient) })
-
   it('activates an user', async () => {
     const email = 'user@mail.com', token = 'activation-token'
 
