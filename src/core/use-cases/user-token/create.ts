@@ -11,7 +11,7 @@ export class CreateUserTokenUseCase {
   constructor(private repository: UserTokenRepository) { }
 
   execute(props: CreateUserTokenUseCaseProps) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<string>(async (resolve, reject) => {
       const token = crypto.randomBytes(32).toString('hex')
 
       this.repository

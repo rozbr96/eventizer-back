@@ -6,11 +6,10 @@ interface BaseUser {
   email: string
   active: boolean
   role: Role
-}
-
-export interface UserCreation extends BaseUser {
   password: string
 }
+
+export interface UserCreation extends BaseUser { }
 
 export interface UserEdition {
   active?: boolean
