@@ -42,4 +42,18 @@ describe('POST /auth/signup', () => {
 
     expect(user).toMatchObject({ active: false, role: 'client' })
   })
+
+  it('fails to create due to existing email conflict', async () => {
+    await prismaClient.user.create({ data: { name: 'John Doe', email: 'john.doe@email.com', password: 'pass' } })
+
+    const { status, body } = await request(app)
+      .post('/auth/signup')
+      .send({
+        name: 'Any Name', password: 'Any Pass',
+        email: 'john.doe@email.com'
+      })
+
+    expect(status).toBe(400)
+    expect(body).toMatchObject({ detail: 'Email is already in use' })
+  })
 })

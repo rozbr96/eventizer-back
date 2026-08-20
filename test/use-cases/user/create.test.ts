@@ -2,11 +2,12 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import { CreateUserUseCase } from '@/core/use-cases/index.js'
+import type { UserRetrieval } from '@/core/entities/index.js'
 
 describe('CreateUserUseCase', () => {
   it('creates a client user as inactive', async () => {
     const repository = {
-      create: vi.fn(),
+      create: vi.fn(() => Promise.resolve({} as UserRetrieval)),
       findByEmail: vi.fn(),
     }
 

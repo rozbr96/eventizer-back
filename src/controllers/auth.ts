@@ -10,6 +10,7 @@ const signup = (req: Request, resp: Response) => {
   new CreateUserUseCase(userRepository)
     .execute(req.body)
     .then(() => { resp.end() })
+    .catch((err) => { resp.status(400).json(err) })
 }
 
 export default { signup }
