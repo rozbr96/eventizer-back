@@ -11,3 +11,20 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum Role {
+  client
+  doorman
+  organizer
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String
+  name     String
+  role     Role    @default(client)
+  active   Boolean @default(false)
+
+  @@map("users")
+}

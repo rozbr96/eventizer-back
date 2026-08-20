@@ -7,7 +7,7 @@ api:
 db:
 	@${DOCKER} up -d db
 
-tests: api
+tests: api prisma.push.test
 	@${DOCKER} exec api npm test
 
 bash: api
@@ -30,6 +30,9 @@ prisma.generate:
 
 prisma.push:
 	@${DOCKER} run --rm npx prisma db push
+
+prisma.push.test:
+	@${DOCKER} run --rm -e DB_NAME=test npx prisma db push
 
 prisma.pull:
 	@${DOCKER} run --rm npx prisma db pull
