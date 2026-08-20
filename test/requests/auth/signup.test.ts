@@ -56,4 +56,19 @@ describe('POST /auth/signup', () => {
     expect(status).toBe(400)
     expect(body).toMatchObject({ detail: 'Email is already in use' })
   })
+
+  it('fails to create due to missing data', async () => {
+    const { status, body } = await request(app)
+      .post('/auth/signup')
+      .send({ name: '', password: '', email: '' })
+
+    expect(status).toBe(400)
+    expect(body).toStrictEqual({
+      details: [
+        '[name] Cannot be blank',
+        '[email] Invalid email address',
+        '[password] Cannot be blank'
+      ]
+    })
+  })
 })
