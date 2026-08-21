@@ -5,16 +5,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import app from '@/app.js'
 
 describe('POST /movies/search', () => {
-  describe('with success', () => {
-    beforeEach(() => {
-      vi.stubGlobal('fetch', vi.fn(() => {
-        return Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(searchResult)
-        })
-      }))
-    })
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn(() => {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(searchResult)
+      })
+    }))
+  })
 
+  describe('with success', () => {
     it('returns data from the external API', async () => {
       const response = await request(app).post('/movies/search').send({})
 
@@ -28,6 +28,22 @@ describe('POST /movies/search', () => {
       expect(firstResponse.body).toStrictEqual(secondResponse.body)
       expect(secondResponse.body).toStrictEqual(searchResult)
       expect(fetch).toHaveBeenCalledOnce()
+    })
+  })
+
+  describe('with errors', () => {
+    it('returns errors', async () => {
+      const response = await request(app).post('/movies/search').send({
+        page: 0,
+        year: -1,
+        query: ''
+      })
+
+      expect(response.body).toStrictEqual({
+        details: [
+          '[page] Must be positive'
+        ]
+      })
     })
   })
 })
