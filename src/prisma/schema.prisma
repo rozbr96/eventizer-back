@@ -28,3 +28,11 @@ model User {
 
   @@map("users")
 }
+
+model SearchResult {
+  key        String   @unique
+  result     String
+  expires_at DateTime @default(dbgenerated("NOW() + interval '1 day'"))
+
+  @@map("tmdb_search")
+}

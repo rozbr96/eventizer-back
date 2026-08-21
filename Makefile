@@ -7,6 +7,21 @@ api:
 db:
 	@${DOCKER} up -d db
 
+down:
+	@${DOCKER} down
+
+down.drop:
+	@${DOCKER} down -v
+
+down.api:
+	@${DOCKER} down api
+
+down.db:
+	@${DOCKER} down -v db
+
+down.redis:
+	@${DOCKER} down -v redis
+
 tests: api prisma.push.test
 	@${DOCKER} exec api npm test
 
