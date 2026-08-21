@@ -20,7 +20,7 @@ export class MovieSearchUseCase<Search, Result> {
     const result = await this.api.movies(query, props || {} as Search)
 
     await this.searchResultRepository.set(
-      cacheKey, JSON.stringify(result),
+      cacheKey, result,
       new Date(Date.now() + this.THREE_DAYS)
     )
 
