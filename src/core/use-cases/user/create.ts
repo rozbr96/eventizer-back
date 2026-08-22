@@ -1,4 +1,5 @@
 
+import type { UserRetrieval } from '@/core/entities/index.js'
 import { type UserRepository } from '@/core/repositories/index.js'
 
 interface CreateUserUsecaseProps {
@@ -10,7 +11,7 @@ interface CreateUserUsecaseProps {
 export class CreateUserUseCase {
   constructor(private repository: UserRepository) { }
 
-  execute(props: CreateUserUsecaseProps) {
+  execute(props: CreateUserUsecaseProps): Promise<UserRetrieval> {
     return new Promise((resolve, reject) => {
       this.repository.create({
         ...props,
