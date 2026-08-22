@@ -21,5 +21,9 @@ export default class implements EventRepository<any> {
 
     return prismaClient.event.create({ data, include: { organizer: true } })
   }
+
+  list(): Promise<EventRetrieval<any>[]> {
+    return prismaClient.event.findMany({ include: { organizer: true } })
+  }
 }
 
