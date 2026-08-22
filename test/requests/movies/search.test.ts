@@ -3,6 +3,7 @@ import request from 'supertest'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import app from '@/app.js'
+import { authenticate, createUser } from '@test/helpers.js'
 
 describe('POST /movies/search', () => {
   beforeEach(() => {
@@ -14,16 +15,26 @@ describe('POST /movies/search', () => {
     }))
   })
 
+  const doRequest = async (token: string, data: any = {}) =>
+    await request(app).post('/movies/search')
+      .set('Authorization', `Bearer ${token}`).send(data)
+
   describe('with success', () => {
     it('returns data from the external API', async () => {
-      const response = await request(app).post('/movies/search').send({})
+      const user = await createUser()
+      const token = await authenticate(user)
+
+      const response = await doRequest(token)
 
       expect(response.body).toStrictEqual(searchResult)
     })
 
     it('returns a cached response', async () => {
-      const firstResponse = await request(app).post('/movies/search').send({})
-      const secondResponse = await request(app).post('/movies/search').send({})
+      const user = await createUser()
+      const token = await authenticate(user)
+
+      const firstResponse = await doRequest(token)
+      const secondResponse = await doRequest(token)
 
       expect(firstResponse.body).toStrictEqual(secondResponse.body)
       expect(secondResponse.body).toStrictEqual(searchResult)
@@ -32,12 +43,17 @@ describe('POST /movies/search', () => {
   })
 
   describe('with errors', () => {
+    it('without authenticatation', async () => {
+      const response = await doRequest('')
+
+      expect(response.status).toBe(401)
+    })
+
     it('returns errors', async () => {
-      const response = await request(app).post('/movies/search').send({
-        page: 0,
-        year: -1,
-        query: ''
-      })
+      const user = await createUser()
+      const token = await authenticate(user)
+
+      const response = await doRequest(token, { page: 0, year: -1, query: '' })
 
       expect(response.body).toStrictEqual({
         details: [
