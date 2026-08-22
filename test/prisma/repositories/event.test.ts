@@ -3,21 +3,16 @@ import { describe, expect, it } from 'vitest'
 
 import prismaClient from '@/prisma/client.js'
 import { EventRepository } from '@/prisma/repositories/index.js'
+import { createEvent, createUser } from '@test/helpers.js'
 
 describe('EventRepository', () => {
   const eventRepository = new EventRepository()
 
   it('creates an event', async () => {
-    const { id: organizer_id } = await prismaClient.user.create({
-      data: {
-        email: 'user@email.com',
-        name: 'User',
-        password: 'pass',
-      }
-    })
+    const { id: organizer_id } = await createUser()
 
     await eventRepository.create({
-      organizer_id,
+      organizer_id: organizer_id as number,
       event: {
         status: 'done',
         address: 'address',
@@ -35,6 +30,22 @@ describe('EventRepository', () => {
 
     expect(event?.id).not.toBeNull()
     expect(event).toMatchObject({ status: 'done', address: 'address', price_in_cents: 100_00 })
+  })
+
+  it('lists existing events', async () => {
+    const events = await eventRepository.list()
+
+    expect(events.length).toBe(0)
+  })
+
+  it('lists existing events', async () => {
+    const { id: organizer_id } = await createUser()
+
+    await createEvent({ organizer_id, count: 3 })
+
+    const events = await eventRepository.list()
+
+    expect(events.length).toBe(3)
   })
 })
 
