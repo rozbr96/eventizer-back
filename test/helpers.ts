@@ -65,7 +65,7 @@ export const createEventMetadata = (data: Partial<Movie> = {}): Movie => {
 export const createEvent = async (
   props: {
     data?: Partial<EventCreation<Object>>,
-    organizer_id?: number | string,
+    organizer_id?: number,
     count?: number
   }
 ): Promise<Array<EventRetrieval<Object>>> => {

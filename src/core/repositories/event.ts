@@ -6,7 +6,7 @@ import type {
 
 interface EventCreationProps<EventMetadata> {
   event: EventCreation<EventMetadata>
-  organizer_id: number | string
+  organizer_id: number
 }
 
 export interface EventListingProps {

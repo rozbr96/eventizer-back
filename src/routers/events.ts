@@ -10,7 +10,7 @@ import { bodyValidation } from '@/middlewares/index.js'
 const router = Router()
 
 const eventCreationSchema = zod.object({
-  organizer_id: zod.number().or(zod.string()),
+  organizer_id: zod.number(),
   event: zod.object({
     title: zod.string(),
     description: zod.string(),

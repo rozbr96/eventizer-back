@@ -16,7 +16,7 @@ interface BaseEvent<EventMetadata> {
 }
 
 export interface EventRetrieval<EventMetadata> extends BaseEvent<EventMetadata> {
-  organizer_id: number | string
+  organizer_id: number
   organizer: UserRetrieval
 }
 

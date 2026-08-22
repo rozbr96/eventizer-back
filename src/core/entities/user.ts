@@ -16,7 +16,7 @@ export interface UserEdition {
 }
 
 export interface UserRetrieval extends BaseUser {
-  id: number | string
+  id: number
 }
 
 export type User = UserCreation | UserRetrieval
