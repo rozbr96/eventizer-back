@@ -2,7 +2,7 @@
 import { Router } from 'express'
 import * as zod from 'zod'
 
-import controller from '@/controllers/movies.js'
+import { moviesController } from '@/controllers/index.js'
 import bodyValidation from '@/middlewares/body-validation.js'
 import authenticationRequired from '@/middlewares/authentication-required.js'
 
@@ -18,7 +18,7 @@ const movieSearchSchema = zod.object({
 router.post('/search', [
   authenticationRequired(),
   bodyValidation(movieSearchSchema)
-], controller.search)
+], moviesController.search)
 
 export default router
 

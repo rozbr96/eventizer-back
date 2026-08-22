@@ -3,7 +3,7 @@ import { Router } from 'express'
 
 import * as zod from 'zod'
 
-import eventsController from '@/controllers/events.js'
+import { eventsController } from '@/controllers/index.js'
 import authenticationRequired from '@/middlewares/authentication-required.js'
 import bodyValidation from '@/middlewares/body-validation.js'
 

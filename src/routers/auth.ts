@@ -3,7 +3,7 @@ import { Router } from 'express'
 import * as zod from 'zod'
 
 import bodyValidation from '@/middlewares/body-validation.js'
-import authController from '@/controllers/auth.js'
+import { authController } from '@/controllers/index.js'
 
 const router = Router()
 
