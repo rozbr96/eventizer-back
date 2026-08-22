@@ -13,11 +13,11 @@ const create = (req: Request, resp: Response) => {
     .catch((err) => { console.debug(err); resp.status(400).json(err) })
 }
 
-const list = (_req: Request, resp: Response) => {
+const list = (req: Request, resp: Response) => {
   const eventRepository = new EventRepository()
 
   new ListEventsUseCase(eventRepository)
-    .execute()
+    .execute(req.app.locals.query)
     .then((result) => { resp.json(result) })
 }
 
