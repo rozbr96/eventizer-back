@@ -55,4 +55,72 @@ describe('POST /events', () => {
 
     expect(createdEvent).toMatchObject({ title: "Next Year's XMas" })
   })
+
+  it('fails due to missing authentication', async () => {
+    const { status } = await doRequest('', {})
+
+    expect(status).toBe(401)
+  })
+
+  it('fails due to missing data', async () => {
+    const user = await createUser()
+    const token = await authenticate(user)
+
+    const { status, body } = await doRequest(token, {})
+
+    expect(status).toBe(400)
+    expect(body).toStrictEqual({
+      details: [
+        '[organizer_id] Invalid input',
+        '[event] Invalid input: expected object, received undefined'
+      ]
+    })
+  })
+
+  it('fails due to missing event data', async () => {
+    const user = await createUser()
+    const token = await authenticate(user)
+
+    const { status, body } = await doRequest(token, {
+      organizer_id: true,
+      event: {}
+    })
+
+    expect(status).toBe(400)
+    expect(body).toStrictEqual({
+      details: [
+        '[organizer_id] Invalid input',
+        '[event.title] Invalid input: expected string, received undefined',
+        '[event.description] Invalid input: expected string, received undefined',
+        '[event.datetime] Invalid input: expected string, received undefined',
+        '[event.address] Invalid input: expected string, received undefined',
+        '[event.address_title] Invalid input: expected string, received undefined',
+        '[event.capacity] Invalid input: expected number, received undefined',
+        '[event.price_in_cents] Invalid input: expected number, received undefined',
+        '[event.metadata] Invalid input: expected nonoptional, received undefined'
+      ]
+    })
+  })
+
+  it('fails due to invalid data', async () => {
+    const user = await createUser()
+    const token = await authenticate(user)
+
+    const { status, body } = await doRequest(token, {
+      organizer_id: user.id,
+      event: {
+        price_in_cents: -100,
+        datetime: 'invalid datetime',
+        capacity: -1
+      }
+    })
+
+    expect(status).toBe(400);
+
+    [
+      '[event.price_in_cents] Must be positive',
+      '[event.datetime] Invalid ISO datetime',
+      '[event.capacity] Must be positive'
+    ].forEach((error) => { expect(body.details).toContain(error) })
+  })
 })
