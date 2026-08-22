@@ -6,12 +6,12 @@ import type { EventRepository } from '@/core/repositories/index.js'
 import type { EventCreateInput } from '@/prisma/generated/models.js'
 
 interface EventCreationsProps {
-  event: EventCreation,
+  event: EventCreation<any>,
   organizer_id: number
 }
 
-export default class implements EventRepository {
-  create(props: EventCreationsProps): Promise<EventRetrieval> {
+export default class implements EventRepository<any> {
+  create(props: EventCreationsProps): Promise<EventRetrieval<any>> {
     const { event, organizer_id } = props
 
     const data: EventCreateInput = {
