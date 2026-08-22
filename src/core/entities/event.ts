@@ -3,7 +3,7 @@ import type { UserRetrieval } from './index.js'
 
 type EventStatus = 'published' | 'canceled' | 'ongoing' | 'done'
 
-interface BaseEvent {
+interface BaseEvent<EventMetadata> {
   title: string
   description: string
   datetime: Date
@@ -11,14 +11,14 @@ interface BaseEvent {
   address_title: string
   capacity: number
   price_in_cents: number
-  metadata: any
+  metadata: EventMetadata
   status: EventStatus
 }
 
-export interface EventRetrieval extends BaseEvent {
+export interface EventRetrieval<EventMetadata> extends BaseEvent<EventMetadata> {
   organizer_id: number | string
   organizer: UserRetrieval
 }
 
-export interface EventCreation extends BaseEvent { }
+export interface EventCreation<EventMetadata> extends BaseEvent<EventMetadata> { }
 
