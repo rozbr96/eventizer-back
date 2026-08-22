@@ -5,17 +5,22 @@ import request from 'supertest'
 import app from '@/app.js'
 import prismaClient from '@/prisma/client.js'
 
+import { authenticate, createUser } from '@test/helpers.js'
+
+const doRequest = async (token: string, data: any) => {
+  return await request(app)
+    .post('/events')
+    .set('Authorization', `Bearer ${token}`)
+    .send(data)
+}
+
 describe('POST /events', () => {
   it('creates an event', async () => {
-    const { id: organizer_id } = await prismaClient.user.create({
-      data: {
-        name: 'User', email: 'user@email.com',
-        password: 'pass', active: true,
-        role: 'organizer'
-      }
-    })
+    const user = await createUser()
+    const token = await authenticate(user)
 
-    const { status, body } = await request(app).post('/events').send({
+    const { status } = await doRequest(token, {
+      organizer_id: user.id,
       event: {
         title: "Next Year's XMas",
         description: 'Watch movies at Christmas',
@@ -43,5 +48,11 @@ describe('POST /events', () => {
         }
       }
     })
+
+    expect(status).toBe(201)
+
+    const [createdEvent] = await prismaClient.event.findMany()
+
+    expect(createdEvent).toMatchObject({ title: "Next Year's XMas" })
   })
 })
