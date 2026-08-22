@@ -2,7 +2,7 @@
 import type { Request, Response } from 'express'
 
 import tmdbAPI from '@/lib/tmdb/api.js'
-import { MovieSearchUseCase } from '@/core/use-cases/movie/search.js'
+import { MovieSearchUseCase } from '@/core/use-cases/index.js'
 import { SearchResultRepository } from '@/prisma/repositories/index.js'
 
 const search = (req: Request, resp: Response) => {
