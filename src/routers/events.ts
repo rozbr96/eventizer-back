@@ -32,7 +32,7 @@ router.post('/', [
   bodyValidation(eventCreationSchema),
 ], eventsController.create)
 
-router.get('/list', [
+router.get('/', [
   queryValidation(eventListingParamsSchema),
 ], eventsController.list)
 

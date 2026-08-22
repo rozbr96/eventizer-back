@@ -6,12 +6,12 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import app from '@/app.js'
 import { createEvent } from '@test/helpers.js'
 
-describe('GET /events/list', () => {
+describe('GET /events', () => {
   describe('with existing events', () => {
     beforeEach(async () => { await createEvent({ count: 30 }) })
 
     it('returns first items', async () => {
-      const { status, body } = await request(app).get('/events/list')
+      const { status, body } = await request(app).get('/events')
 
       expect(status).toBe(200)
       expect(body).toMatchObject({
@@ -24,7 +24,7 @@ describe('GET /events/list', () => {
     })
 
     it('returns items from second page', async () => {
-      const { status, body } = await request(app).get('/events/list').query({ page: 2 })
+      const { status, body } = await request(app).get('/events').query({ page: 2 })
 
       expect(status).toBe(200)
       expect(body).toMatchObject({
@@ -37,7 +37,7 @@ describe('GET /events/list', () => {
     })
 
     it('returns no items for the third page', async () => {
-      const { status, body } = await request(app).get('/events/list').query({ page: 3 })
+      const { status, body } = await request(app).get('/events').query({ page: 3 })
 
       expect(status).toBe(200)
       expect(body).toStrictEqual({
@@ -49,7 +49,7 @@ describe('GET /events/list', () => {
     })
 
     it('handles non numeric page', async () => {
-      const { status, body } = await request(app).get('/events/list').query({ page: 'a3b' })
+      const { status, body } = await request(app).get('/events').query({ page: 'a3b' })
 
       expect(status).toBe(200)
       expect(body).toStrictEqual({
@@ -64,7 +64,7 @@ describe('GET /events/list', () => {
 
   describe('without existing events', () => {
     it('returns an empty result', async () => {
-      const { status, body } = await request(app).get('/events/list').send()
+      const { status, body } = await request(app).get('/events').send()
 
       expect(status).toBe(200)
       expect(body).toStrictEqual({
@@ -77,7 +77,7 @@ describe('GET /events/list', () => {
 
 
     it('handles non numeric page', async () => {
-      const { status, body } = await request(app).get('/events/list').query({ page: 'five' })
+      const { status, body } = await request(app).get('/events').query({ page: 'five' })
 
       expect(status).toBe(200)
       expect(body).toStrictEqual({
