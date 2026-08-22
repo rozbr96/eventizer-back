@@ -4,6 +4,7 @@ import * as zod from 'zod'
 
 import controller from '@/controllers/movies.js'
 import bodyValidation from '@/middlewares/body-validation.js'
+import authenticationRequired from '@/middlewares/authentication-required.js'
 
 const router = Router()
 
@@ -15,6 +16,7 @@ const movieSearchSchema = zod.object({
 })
 
 router.post('/search', [
+  authenticationRequired(),
   bodyValidation(movieSearchSchema)
 ], controller.search)
 
