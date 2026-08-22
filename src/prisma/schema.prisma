@@ -18,6 +18,13 @@ enum Role {
   organizer
 }
 
+enum EventStatus {
+  published
+  canceled
+  ongoing
+  done
+}
+
 model User {
   id       Int     @id @default(autoincrement())
   email    String  @unique
@@ -25,8 +32,26 @@ model User {
   name     String
   role     Role    @default(client)
   active   Boolean @default(false)
+  events   Event[]
 
   @@map("users")
+}
+
+model Event {
+  id             Int         @id @default(autoincrement())
+  title          String
+  description    String
+  datetime       DateTime
+  address        String
+  address_title  String
+  capacity       Int
+  price_in_cents Int
+  status         EventStatus @default(published)
+  organizer      User        @relation(fields: [organizer_id], references: [id])
+  organizer_id   Int
+  metadata       Json
+
+  @@map("events")
 }
 
 model SearchResult {
