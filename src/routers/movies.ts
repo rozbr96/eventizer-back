@@ -3,8 +3,10 @@ import { Router } from 'express'
 import * as zod from 'zod'
 
 import { moviesController } from '@/controllers/index.js'
-import bodyValidation from '@/middlewares/body-validation.js'
-import authenticationRequired from '@/middlewares/authentication-required.js'
+import {
+  bodyValidation,
+  authenticationRequired
+} from '@/middlewares/index.js'
 
 const router = Router()
 

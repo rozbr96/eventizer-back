@@ -2,7 +2,7 @@
 import express from 'express'
 
 import { authRouter, eventsRouter, moviesRouter } from '@/routers/index.js'
-import errorHandling from '@/middlewares/error-handling.js'
+import { errorHandling } from '@/middlewares/index.js'
 
 const app = express()
 
