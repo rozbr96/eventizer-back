@@ -7,6 +7,9 @@ api:
 db:
 	@${DOCKER} up -d db
 
+build:
+	@${DOCKER} run --rm npm run build
+
 down:
 	@${DOCKER} down
 
@@ -40,6 +43,9 @@ logs.api:
 logs.db:
 	@${DOCKER} logs -f db
 
+logs.seed:
+	@${DOCKER} logs -f seed
+
 prisma.generate:
 	@${DOCKER} run --rm npx prisma generate
 
@@ -51,3 +57,7 @@ prisma.push.test:
 
 prisma.pull:
 	@${DOCKER} run --rm npx prisma db pull
+
+seed:
+	@${DOCKER} run --rm npm run seed
+
