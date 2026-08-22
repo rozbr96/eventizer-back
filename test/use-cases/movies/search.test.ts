@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import prismaClient from '@/prisma/client.js'
 import type { API } from '@/core/lib/index.js'
 import { MovieSearchUseCase } from '@/core/use-cases/movie/search.js'
-import SearchResultRepository from '@/prisma/repositories/search-result.js'
+import { SearchResultRepository } from '@/prisma/repositories/index.js'
 
 describe('MovieSearchUseCase', () => {
   type CustomSearchProps = { page?: number, offset?: number }

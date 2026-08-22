@@ -1,7 +1,7 @@
 
 import type { Request, Response } from 'express'
 
-import EventRepository from '@/prisma/repositories/event.js'
+import { EventRepository } from '@/prisma/repositories/index.js'
 import { CreateEventUseCase } from '@/core/use-cases/event/create.js'
 
 const create = (req: Request, resp: Response) => {

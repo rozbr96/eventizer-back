@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 
 import redisClient from '@/redis/client.js'
-import UserTokenRepository from '@/redis/repositories/user-token.js'
+import { UserTokenRepository } from '@/redis/repositories/index.js'
 
 describe('UserTokenRepository', () => {
   it('stores user token', async () => {

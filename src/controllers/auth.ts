@@ -8,8 +8,8 @@ import {
   LoginUserUseCase,
 } from '@/core/use-cases/index.js'
 
-import UserRepository from '@/prisma/repositories/user.js'
-import UserTokenRepository from '@/redis/repositories/user-token.js'
+import { UserRepository } from '@/prisma/repositories/index.js'
+import { UserTokenRepository } from '@/redis/repositories/index.js'
 
 const activate = (req: Request, resp: Response) => {
   const userRepository = new UserRepository()

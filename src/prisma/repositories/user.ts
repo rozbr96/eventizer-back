@@ -2,7 +2,7 @@
 import prismaClient from '@/prisma/client.js'
 
 import type { UserCreation, UserEdition, UserRetrieval } from '@/core/entities/index.js'
-import { UserRepository } from '@/core/repositories/user.js'
+import { UserRepository } from '@/core/repositories/index.js'
 
 export default class extends UserRepository {
   create(user: UserCreation): Promise<UserRetrieval> {

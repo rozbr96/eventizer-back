@@ -1,6 +1,6 @@
 
 import type { API } from '@/core/lib/index.js'
-import type { SearchResultRepository } from '@/core/repositories/search-result.js'
+import type { SearchResultRepository } from '@/core/repositories/index.js'
 
 export class MovieSearchUseCase<Search, Result> {
   THREE_DAYS = 60 * 60 * 24 * 3 * 1000

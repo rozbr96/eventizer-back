@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 
 import prismaClient from '@/prisma/client.js'
-import EventRepository from '@/prisma/repositories/event.js'
+import { EventRepository } from '@/prisma/repositories/index.js'
 
 describe('EventRepository', () => {
   const eventRepository = new EventRepository()

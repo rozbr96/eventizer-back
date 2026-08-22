@@ -1,6 +1,6 @@
 
 import type { EventCreation, EventRetrieval } from '@/core/entities/index.js'
-import type { EventRepository } from '@/core/repositories/event.js'
+import type { EventRepository } from '@/core/repositories/index.js'
 
 export class CreateEventUseCase<EventMetadata> {
   constructor(private repository: EventRepository) { }

@@ -1,7 +1,7 @@
 
 import type { Request, Response, NextFunction } from 'express'
 
-import UserTokenRepository from '@/redis/repositories/user-token.js'
+import { UserTokenRepository } from '@/redis/repositories/index.js'
 import { AuthenticateUserUseCase } from '@/core/use-cases/index.js'
 
 export default () => {

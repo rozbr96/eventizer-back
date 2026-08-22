@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 
 import prismaClient from '@/prisma/client.js'
-import UserRepository from '@/prisma/repositories/user.js'
+import { UserRepository } from '@/prisma/repositories/index.js'
 
 describe('UserRepository', () => {
   it('creates an user', async () => {

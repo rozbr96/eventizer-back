@@ -1,6 +1,6 @@
 
-import UserRepository from '@/prisma/repositories/user.js'
-import UserTokenRepository from '@/redis/repositories/user-token.js'
+import { UserRepository } from '@/prisma/repositories/index.js'
+import { UserTokenRepository } from '@/redis/repositories/index.js'
 
 import {
   CreateUserUseCase,
