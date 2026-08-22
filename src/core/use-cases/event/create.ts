@@ -1,5 +1,5 @@
 
-import type { EventCreation, EventRetrieval } from '@/core/entities/event.js'
+import type { EventCreation, EventRetrieval } from '@/core/entities/index.js'
 import type { EventRepository } from '@/core/repositories/event.js'
 
 export class CreateEventUseCase<EventMetadata> {

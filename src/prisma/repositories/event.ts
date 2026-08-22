@@ -1,7 +1,7 @@
 
 import prismaClient from '@/prisma/client.js'
 
-import type { EventCreation, EventRetrieval } from '@/core/entities/event.js'
+import type { EventCreation, EventRetrieval } from '@/core/entities/index.js'
 import type { EventRepository } from '@/core/repositories/index.js'
 import type { EventCreateInput } from '@/prisma/generated/models.js'
 

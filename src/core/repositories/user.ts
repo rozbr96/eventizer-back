@@ -1,5 +1,5 @@
 
-import type { UserCreation, UserEdition, UserRetrieval } from '@/core/entities/user.js'
+import type { UserCreation, UserEdition, UserRetrieval } from '@/core/entities/index.js'
 
 export abstract class UserRepository {
   abstract create(user: UserCreation): Promise<UserRetrieval>
