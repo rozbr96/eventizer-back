@@ -2,7 +2,7 @@
 import type { Request, Response } from 'express'
 
 import { EventRepository } from '@/prisma/repositories/index.js'
-import { CreateEventUseCase } from '@/core/use-cases/index.js'
+import { CreateEventUseCase, ListEventsUseCase } from '@/core/use-cases/index.js'
 
 const create = (req: Request, resp: Response) => {
   const eventRepository = new EventRepository()
@@ -13,5 +13,13 @@ const create = (req: Request, resp: Response) => {
     .catch((err) => { console.debug(err); resp.status(400).json(err) })
 }
 
-export default { create }
+const list = (_req: Request, resp: Response) => {
+  const eventRepository = new EventRepository()
+
+  new ListEventsUseCase(eventRepository)
+    .execute()
+    .then((result) => { resp.json(result) })
+}
+
+export default { create, list }
 

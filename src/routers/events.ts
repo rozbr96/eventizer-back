@@ -28,5 +28,7 @@ router.post('/', [
   bodyValidation(eventCreationSchema),
 ], eventsController.create)
 
+router.get('/list', eventsController.list)
+
 export default router
 
