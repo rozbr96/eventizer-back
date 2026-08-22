@@ -22,3 +22,4 @@ export interface EventRetrieval<EventMetadata> extends BaseEvent<EventMetadata> 
 
 export interface EventCreation<EventMetadata> extends BaseEvent<EventMetadata> { }
 
+export type Event<EventMetadata> = EventRetrieval<EventMetadata> | EventCreation<EventMetadata>
