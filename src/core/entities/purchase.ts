@@ -1,5 +1,5 @@
 
-import type { User, Event } from '@/core/entities/index.js'
+import type { User, Event, EventRetrieval } from '@/core/entities/index.js'
 
 type PurchaseStatus = 'eventConfirmation' | 'personalInfoSupplying' | 'payment' | 'done' | 'canceled' | 'expired'
 
@@ -8,7 +8,8 @@ export interface PurchaseRetrieval<EventMetadata> {
   status: PurchaseStatus
   expires_at: Date
   client: User
-  event: Event<EventMetadata>
+  event: EventRetrieval<EventMetadata>
+  holder: string
 }
 
 export interface PurchaseCreation<EventMetadata> {

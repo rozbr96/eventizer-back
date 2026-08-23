@@ -1,9 +1,12 @@
 
 import type { Request, Response } from 'express'
 
-import { PurchaseRepository } from '@/prisma/repositories/index.js'
+import { PurchaseRepository, TicketRepository } from '@/prisma/repositories/index.js'
 import { StartPurchaseUseCase } from '@/core/use-cases/index.js'
 import { AdvancePurchaseStep } from '@/core/use-cases/purchase/advance-step.js'
+
+const purchaseRepository = new PurchaseRepository()
+const ticketRepository = new TicketRepository()
 
 const start = (req: Request, resp: Response) => {
   const purchaseRepository = new PurchaseRepository()
@@ -18,31 +21,25 @@ const start = (req: Request, resp: Response) => {
 }
 
 const confirmEvent = (req: Request<{ purchaseId: string }>, resp: Response) => {
-  const purchaseRepository = new PurchaseRepository()
-
   const purchaseId = Number.parseInt(req.params.purchaseId)
 
-  new AdvancePurchaseStep(purchaseRepository)
+  new AdvancePurchaseStep(purchaseRepository, ticketRepository)
     .execute({ status: 'personalInfoSupplying', id: purchaseId })
     .then(() => { resp.end() })
 }
 
 const supplyPersonalInfo = (req: Request<{ purchaseId: string }>, resp: Response) => {
-  const purchaseRepository = new PurchaseRepository()
-
   const purchaseId = Number.parseInt(req.params.purchaseId)
 
-  new AdvancePurchaseStep(purchaseRepository)
+  new AdvancePurchaseStep(purchaseRepository, ticketRepository)
     .execute({ status: 'payment', id: purchaseId, holder: req.body.holder })
     .then(() => { resp.end() })
 }
 
 const pay = (req: Request<{ purchaseId: string }>, resp: Response) => {
-  const purchaseRepository = new PurchaseRepository()
-
   const purchaseId = Number.parseInt(req.params.purchaseId)
 
-  new AdvancePurchaseStep(purchaseRepository)
+  new AdvancePurchaseStep(purchaseRepository, ticketRepository)
     .execute({ status: 'done', id: purchaseId })
     .then(() => { resp.end() })
 }
