@@ -1,5 +1,6 @@
 
 import express from 'express'
+import morgan from 'morgan'
 
 import {
   authRouter,
@@ -13,6 +14,9 @@ import { errorHandling } from '@/middlewares/index.js'
 
 const app = express()
 
+const logConfig = process.env.ENV === 'dev' ? 'dev' : 'tiny'
+
+app.use(morgan(logConfig))
 app.use(express.json())
 
 app.use('/auth', authRouter)
