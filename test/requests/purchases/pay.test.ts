@@ -18,6 +18,7 @@ describe('POST /purchases/:purchase-id/pay', () => {
 
       const { id: purchaseId } = await prismaClient.purchase.create({
         data: {
+          holder: 'Holder',
           event: { connect: { id: event.id } },
           client: { connect: { id: user.id } }
         }
@@ -25,9 +26,17 @@ describe('POST /purchases/:purchase-id/pay', () => {
 
       const { status } = await doRequest(purchaseId, {}, token)
       const purchase = await prismaClient.purchase.findFirst()
+      const ticket = await prismaClient.ticket.findFirst()
 
       expect(status).toBe(200)
       expect(purchase?.status).toBe('done')
+      expect(ticket?.code).not.toBeNull()
+      expect(ticket).toMatchObject({
+        purchase_id: purchaseId,
+        event_id: event.id,
+        holder: 'Holder',
+        consumed: false
+      })
     })
   })
 })
