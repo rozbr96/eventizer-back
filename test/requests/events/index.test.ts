@@ -10,7 +10,7 @@ import { authenticate, createUser } from '@test/helpers.js'
 const doRequest = async (token: string, data: any) => {
   return await request(app)
     .post('/events')
-    .set('Authorization', `Bearer ${token}`)
+    .set('Cookie', `token=${token}`)
     .send(data)
 }
 

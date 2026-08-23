@@ -7,7 +7,7 @@ import prismaClient from '@/prisma/client.js'
 import { authenticate, createEvent, createUser } from '@test/helpers.js'
 
 const doRequest = async (data: Object = {}, token: string = '') =>
-  request(app).post('/purchases').set('Authorization', `Bearer ${token}`).send(data)
+  request(app).post('/purchases').set('Cookie', `token=${token}`).send(data)
 
 describe('POST /purchases', () => {
   describe('when authenticated', () => {

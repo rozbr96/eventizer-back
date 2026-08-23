@@ -14,7 +14,7 @@ export default class implements PurchaseRepository<any> {
         client: { connect: { id: client_id } },
         event: { connect: { id: event_id } }
       },
-      include: { client: true, event: true }
+      include: { client: true, event: { include: { organizer: true } } }
     })
   }
 
@@ -27,7 +27,7 @@ export default class implements PurchaseRepository<any> {
     return prismaClient.purchase.update({
       where: { id: purchaseId },
       data: eventData,
-      include: { event: true, client: true }
+      include: { client: true, event: { include: { organizer: true } } }
     })
   }
 }

@@ -17,7 +17,7 @@ describe('POST /movies/search', () => {
 
   const doRequest = async (token: string, data: any = {}) =>
     await request(app).post('/movies/search')
-      .set('Authorization', `Bearer ${token}`).send(data)
+      .set('Cookie', `token=${token}`).send(data)
 
   describe('with success', () => {
     it('returns data from the external API', async () => {

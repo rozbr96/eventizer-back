@@ -1,5 +1,5 @@
 
-import * as jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 import type { UserTokenRepository } from '@/core/repositories/index.js'
 import type { UserTokenData } from '@/core/entities/user-token-data.js'
