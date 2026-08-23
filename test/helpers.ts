@@ -1,6 +1,8 @@
 
 import { faker } from '@faker-js/faker'
 
+import prismaClient from '@/prisma/client.js'
+
 import { EventRepository, UserRepository } from '@/prisma/repositories/index.js'
 import { UserTokenRepository } from '@/redis/repositories/index.js'
 
@@ -13,12 +15,15 @@ import {
 import type {
   EventCreation,
   EventRetrieval,
+  PurchaseCreation,
+  PurchaseRetrieval,
   UserCreation,
   UserRetrieval,
   UserTokenData
 } from '@/core/entities/index.js'
 
 import type { Movie } from '@/lib/tmdb/entities.js'
+import type { PurchaseStatus } from '@/prisma/generated/enums.js'
 
 export const authenticate = async (user: UserTokenData) => {
   const userTokenRepository = new UserTokenRepository()
@@ -108,3 +113,55 @@ export const createEvents = async (
   return Promise.all(promises)
 }
 
+export const createPurchase = async (
+  props: Partial<{
+    client_id: number
+    event_id: number
+    status: PurchaseStatus
+    holder: string
+    expires_at: Date
+  }> = {}
+): Promise<PurchaseRetrieval<any>> => {
+  const client_id = props.client_id || (await createUser({ role: 'client' })).id
+  const event_id = props.event_id || (await createEvent()).id
+  const status = props.status || 'payment'
+  const holder = props.holder || ''
+  const expires_at = props.expires_at || new Date(Date.now() + 60 * 15 * 1000)
+
+  return prismaClient.purchase.create({
+    data: {
+      status,
+      holder,
+      expires_at,
+      event: { connect: { id: event_id } },
+      client: { connect: { id: client_id } }
+    },
+    include: { client: true, event: { include: { organizer: true } } }
+  })
+}
+
+export const createTicket = async (
+  props: Partial<{
+    purchase_id: number
+    event_id: number
+    holder: string
+    code: string
+    consumed: boolean
+  }> = {}
+) => {
+  const code = props.code || crypto.randomUUID()
+  const holder = props.holder || ''
+  const consumed = props.consumed || false
+  const event_id = props.event_id || (await createEvent()).id
+  const purchase_id = props.purchase_id || (await createPurchase()).id
+
+  return prismaClient.ticket.create({
+    data: {
+      code,
+      holder,
+      consumed,
+      event: { connect: { id: event_id } },
+      purchase: { connect: { id: purchase_id } }
+    }
+  })
+}
