@@ -20,6 +20,7 @@ const logConfig = process.env.ENV === 'dev' ? 'dev' : 'tiny'
 const allowedHosts = (process.env.ALLOWED_HOSTS || '').split(',')
 
 app.use(cors({
+  credentials: true,
   origin(requestOrigin, callback) {
     if (!requestOrigin) return callback(null, true)
     if (allowedHosts.includes(requestOrigin)) return callback(null, true)

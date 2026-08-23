@@ -6,11 +6,10 @@ import { AuthenticateUserUseCase } from '@/core/use-cases/index.js'
 
 export default () => {
   return async (req: Request, _resp: Response, next: NextFunction) => {
-    const { authorization } = req.headers
+    const { token } = req.cookies
 
-    if (!authorization) return next({ status: 401, detail: 'Unauthenticated' })
+    if (!token) return next({ status: 401, detail: 'Unauthenticated' })
 
-    const token = authorization.replace(/^Bearer /, '')
     const userTokenRepository = new UserTokenRepository()
 
     new AuthenticateUserUseCase(userTokenRepository)

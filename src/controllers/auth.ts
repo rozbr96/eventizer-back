@@ -28,7 +28,12 @@ const login = (req: Request, resp: Response) => {
   new LoginUserUseCase(userRepository, userTokenRepository)
     .execute(req.body)
     .then((token) => {
-      resp.json({ token })
+      resp.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 3600 * 1000,
+      }).end()
     }).catch((err) => { resp.status(400).json(err) })
 }
 
