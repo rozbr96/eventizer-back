@@ -10,7 +10,7 @@ const create = (req: Request, resp: Response) => {
   new CreateEventUseCase(eventRepository)
     .execute(req.body.event, req.app.locals.user.id)
     .then(() => { resp.status(201).end() })
-    .catch((err) => { console.debug(err); resp.status(400).json(err) })
+    .catch((err) => { resp.status(400).json(err) })
 }
 
 const list = (req: Request, resp: Response) => {

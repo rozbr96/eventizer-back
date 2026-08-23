@@ -25,14 +25,24 @@ enum EventStatus {
   done
 }
 
+enum PurchaseStatus {
+  eventConfirmation
+  personalInfoSupplying
+  payment
+  done
+  canceled
+  expired
+}
+
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  password String
-  name     String
-  role     Role    @default(client)
-  active   Boolean @default(false)
-  events   Event[]
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  password  String
+  name      String
+  role      Role       @default(client)
+  active    Boolean    @default(false)
+  events    Event[]
+  purchases Purchase[]
 
   @@map("users")
 }
@@ -50,8 +60,22 @@ model Event {
   organizer      User        @relation(fields: [organizer_id], references: [id])
   organizer_id   Int
   metadata       Json
+  purchases      Purchase[]
 
   @@map("events")
+}
+
+model Purchase {
+  id         Int            @id @default(autoincrement())
+  event      Event          @relation(fields: [event_id], references: [id])
+  status     PurchaseStatus @default(eventConfirmation)
+  client     User           @relation(fields: [client_id], references: [id])
+  client_id  Int
+  holder     String?
+  expires_at DateTime       @default(dbgenerated("NOW() + interval '20 minutes'"))
+  event_id   Int
+
+  @@map("purchases")
 }
 
 model SearchResult {

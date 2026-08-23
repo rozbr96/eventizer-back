@@ -4,11 +4,11 @@ import request from 'supertest'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import app from '@/app.js'
-import { createEvent } from '@test/helpers.js'
+import { createEvents } from '@test/helpers.js'
 
 describe('GET /events', () => {
   describe('with existing events', () => {
-    beforeEach(async () => { await createEvent({ count: 30 }) })
+    beforeEach(async () => { await createEvents({ count: 30 }) })
 
     it('returns first items', async () => {
       const { status, body } = await request(app).get('/events')

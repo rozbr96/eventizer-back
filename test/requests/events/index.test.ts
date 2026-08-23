@@ -71,7 +71,7 @@ describe('POST /events', () => {
     expect(status).toBe(400)
     expect(body).toStrictEqual({
       details: [
-        '[organizer_id] Invalid input',
+        '[organizer_id] Invalid input: expected number, received undefined',
         '[event] Invalid input: expected object, received undefined'
       ]
     })
@@ -89,7 +89,7 @@ describe('POST /events', () => {
     expect(status).toBe(400)
     expect(body).toStrictEqual({
       details: [
-        '[organizer_id] Invalid input',
+        '[organizer_id] Invalid input: expected number, received boolean',
         '[event.title] Invalid input: expected string, received undefined',
         '[event.description] Invalid input: expected string, received undefined',
         '[event.datetime] Invalid input: expected string, received undefined',
