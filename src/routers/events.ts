@@ -4,7 +4,7 @@ import { Router } from 'express'
 import * as zod from 'zod'
 
 import { eventsController } from '@/controllers/index.js'
-import { authenticationRequired, queryValidation } from '@/middlewares/index.js'
+import { authenticationRequired, paramsValidation, queryValidation } from '@/middlewares/index.js'
 import { bodyValidation } from '@/middlewares/index.js'
 
 const router = Router()
@@ -27,6 +27,10 @@ const eventListingParamsSchema = zod.object({
   page: zod.string().transform((page) => Number.parseInt(page.replaceAll(/\D/g, '') || '1')).optional()
 })
 
+const eventRetrievalParamsSchema = zod.object({
+  event_id: zod.string().transform(id => id.replaceAll(/\D/g, '') || '0').transform(id => Number.parseInt(id))
+})
+
 router.post('/', [
   authenticationRequired(),
   bodyValidation(eventCreationSchema),
@@ -35,6 +39,10 @@ router.post('/', [
 router.get('/', [
   queryValidation(eventListingParamsSchema),
 ], eventsController.list)
+
+router.get('/:event_id', [
+  paramsValidation(eventRetrievalParamsSchema),
+], eventsController.get)
 
 export default router
 
