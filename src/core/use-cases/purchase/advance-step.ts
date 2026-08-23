@@ -1,5 +1,9 @@
 
-import type { PurchaseRepository } from '@/core/repositories/index.js'
+import type {
+  PurchaseRepository,
+  TicketRepository
+} from '@/core/repositories/index.js'
+import { CreateTicketUseCase } from '../ticket/create.js'
 
 interface PurchaseProps {
   id: number
@@ -24,10 +28,18 @@ type AdvancePurchaseStepProps =
   | AdvancePurchaseToPaymentDoneStep
 
 export class AdvancePurchaseStep<EventMetadata> {
-  constructor(private repository: PurchaseRepository<EventMetadata>) { }
+  constructor(
+    private purchaseRepository: PurchaseRepository<EventMetadata>,
+    private ticketRepository: TicketRepository<EventMetadata>
+  ) { }
 
-  execute(props: AdvancePurchaseStepProps) {
-    return this.repository.update(props.id, props)
+  async execute(props: AdvancePurchaseStepProps) {
+    const purchase = await this.purchaseRepository.update(props.id, props)
+
+    if (props.status != 'done') return purchase
+
+    return await new CreateTicketUseCase(this.ticketRepository)
+      .execute({ event_id: purchase.event.id, purchase_id: purchase.id, holder: purchase.holder || '' })
   }
 }
 
