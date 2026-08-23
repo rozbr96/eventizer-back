@@ -3,6 +3,7 @@ import type { Request, Response } from 'express'
 
 import { PurchaseRepository } from '@/prisma/repositories/index.js'
 import { StartPurchaseUseCase } from '@/core/use-cases/index.js'
+import { AdvancePurchaseStep } from '@/core/use-cases/purchase/advance-step.js'
 
 const start = (req: Request, resp: Response) => {
   const purchaseRepository = new PurchaseRepository()
@@ -16,5 +17,15 @@ const start = (req: Request, resp: Response) => {
     .catch((err) => { resp.status(400).json(err) })
 }
 
-export default { start }
+const confirmEvent = (req: Request<{ purchaseId: string }>, resp: Response) => {
+  const purchaseRepository = new PurchaseRepository()
+
+  const purchaseId = Number.parseInt(req.params.purchaseId)
+
+  new AdvancePurchaseStep(purchaseRepository)
+    .execute({ status: 'personalInfoSupplying', id: purchaseId })
+    .then(() => { resp.end() })
+}
+
+export default { start, confirmEvent }
 

@@ -11,7 +11,7 @@ export default abstract class PurchaseRepository<EventMetadata> {
 
   abstract update(
     purchaseId: number,
-    data: PurchaseEdition<EventMetadata>
+    data: PurchaseEdition
   ): Promise<PurchaseRetrieval<EventMetadata>>
 }
 

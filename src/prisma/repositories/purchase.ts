@@ -18,14 +18,14 @@ export default class implements PurchaseRepository<any> {
     })
   }
 
-  update(PurchaseId: number, data: PurchaseEdition<any>): Promise<PurchaseRetrieval<any>> {
+  update(purchaseId: number, data: PurchaseEdition): Promise<PurchaseRetrieval<any>> {
     const eventData: PurchaseUpdateInput = {}
 
     if (data.holder) eventData.holder = data.holder
     if (data.status) eventData.status = data.status
 
     return prismaClient.purchase.update({
-      where: { id: PurchaseId },
+      where: { id: purchaseId },
       data: eventData,
       include: { event: true, client: true }
     })

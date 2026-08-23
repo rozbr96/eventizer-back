@@ -3,22 +3,20 @@ import type { User, Event } from '@/core/entities/index.js'
 
 type PurchaseStatus = 'eventConfirmation' | 'personalInfoSupplying' | 'payment' | 'done' | 'canceled' | 'expired'
 
-interface BasePurchase<EventMetadata> {
+export interface PurchaseRetrieval<EventMetadata> {
+  id: number
+  status: PurchaseStatus
+  expires_at: Date
   client: User
   event: Event<EventMetadata>
 }
 
-export interface PurchaseRetrieval<EventMetadata> extends BasePurchase<EventMetadata> {
-  id: number
-  status: PurchaseStatus
-  expires_at: Date
-}
-
-export interface PurchaseCreation<EventMetadata> extends BasePurchase<EventMetadata> {
+export interface PurchaseCreation<EventMetadata> {
   client: User
+  event: Event<EventMetadata>
 }
 
-export interface PurchaseEdition<EventMetadata> extends BasePurchase<EventMetadata> {
+export interface PurchaseEdition {
   holder?: string
   status?: PurchaseStatus
 }

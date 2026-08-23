@@ -9,4 +9,11 @@ router.post('/', [
   authenticationRequired()
 ], purchasesController.start)
 
+
+const purchaseRouter = Router({ mergeParams: true })
+purchaseRouter.post('/confirm-event', purchasesController.confirmEvent)
+
+router.use('/:purchaseId/', purchaseRouter)
+
+
 export default router
