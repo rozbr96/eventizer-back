@@ -12,6 +12,7 @@ router.post('/', [
 
 const purchaseRouter = Router({ mergeParams: true })
 purchaseRouter.post('/confirm-event', purchasesController.confirmEvent)
+purchaseRouter.post('/supply-personal-info', purchasesController.supplyPersonalInfo)
 
 router.use('/:purchaseId/', purchaseRouter)
 

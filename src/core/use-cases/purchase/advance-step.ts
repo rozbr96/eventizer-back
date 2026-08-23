@@ -9,15 +9,18 @@ interface AdvancePurchaseToPersonalInfoSupplyingStep extends PurchaseProps {
   status: 'personalInfoSupplying'
 }
 
-type AdvancePurchaseStepProps = AdvancePurchaseToPersonalInfoSupplyingStep
+interface AdvancePurchaseToPaymentStep extends PurchaseProps {
+  status: 'payment'
+  holder: string
+}
+
+type AdvancePurchaseStepProps = AdvancePurchaseToPersonalInfoSupplyingStep | AdvancePurchaseToPaymentStep
 
 export class AdvancePurchaseStep<EventMetadata> {
   constructor(private repository: PurchaseRepository<EventMetadata>) { }
 
   execute(props: AdvancePurchaseStepProps) {
-    const { id, status } = props
-
-    return this.repository.update(id, { status })
+    return this.repository.update(props.id, props)
   }
 }
 
