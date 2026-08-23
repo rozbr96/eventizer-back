@@ -5,7 +5,8 @@ import {
   authRouter,
   eventsRouter,
   moviesRouter,
-  purchasesRouter
+  purchasesRouter,
+  ticketsRouter
 } from '@/routers/index.js'
 
 import { errorHandling } from '@/middlewares/index.js'
@@ -18,6 +19,7 @@ app.use('/auth', authRouter)
 app.use('/events', eventsRouter)
 app.use('/movies', moviesRouter)
 app.use('/purchases', purchasesRouter)
+app.use('/tickets', ticketsRouter)
 
 app.use(errorHandling)
 

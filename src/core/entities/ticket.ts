@@ -13,6 +13,7 @@ export interface TicketCreation {
 export interface TicketRetrieval<EventMetadata> extends TicketCreation {
   id: number
   code: string
+  consumed: boolean
   purchase: PurchaseRetrieval<EventMetadata>
   event: EventRetrieval<EventMetadata>
 }
