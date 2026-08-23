@@ -1,5 +1,7 @@
 
 import express from 'express'
+import morgan from 'morgan'
+import cors from 'cors'
 
 import {
   authRouter,
@@ -13,6 +15,19 @@ import { errorHandling } from '@/middlewares/index.js'
 
 const app = express()
 
+const logConfig = process.env.ENV === 'dev' ? 'dev' : 'tiny'
+const allowedHosts = (process.env.ALLOWED_HOSTS || '').split(',')
+
+app.use(cors({
+  origin(requestOrigin, callback) {
+    if (!requestOrigin) return callback(null, true)
+    if (allowedHosts.includes(requestOrigin)) return callback(null, true)
+
+    callback(new Error(`Host [${requestOrigin}] not allowed!`))
+  }
+}))
+
+app.use(morgan(logConfig))
 app.use(express.json())
 
 app.use('/auth', authRouter)
