@@ -14,7 +14,14 @@ interface AdvancePurchaseToPaymentStep extends PurchaseProps {
   holder: string
 }
 
-type AdvancePurchaseStepProps = AdvancePurchaseToPersonalInfoSupplyingStep | AdvancePurchaseToPaymentStep
+interface AdvancePurchaseToPaymentDoneStep extends PurchaseProps {
+  status: 'done'
+}
+
+type AdvancePurchaseStepProps =
+  AdvancePurchaseToPersonalInfoSupplyingStep
+  | AdvancePurchaseToPaymentStep
+  | AdvancePurchaseToPaymentDoneStep
 
 export class AdvancePurchaseStep<EventMetadata> {
   constructor(private repository: PurchaseRepository<EventMetadata>) { }

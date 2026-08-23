@@ -37,5 +37,15 @@ const supplyPersonalInfo = (req: Request<{ purchaseId: string }>, resp: Response
     .then(() => { resp.end() })
 }
 
-export default { start, confirmEvent, supplyPersonalInfo }
+const pay = (req: Request<{ purchaseId: string }>, resp: Response) => {
+  const purchaseRepository = new PurchaseRepository()
+
+  const purchaseId = Number.parseInt(req.params.purchaseId)
+
+  new AdvancePurchaseStep(purchaseRepository)
+    .execute({ status: 'done', id: purchaseId })
+    .then(() => { resp.end() })
+}
+
+export default { start, confirmEvent, supplyPersonalInfo, pay }
 
