@@ -2,6 +2,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 import {
   authRouter,
@@ -29,6 +30,7 @@ app.use(cors({
 
 app.use(morgan(logConfig))
 app.use(express.json())
+app.use(cookieParser())
 
 app.use('/auth', authRouter)
 app.use('/events', eventsRouter)
