@@ -26,6 +26,10 @@ export default class implements EventRepository<any> {
     return prismaClient.event.create({ data, include: { organizer: true } })
   }
 
+  get(event_id: number): Promise<EventRetrieval<any> | null> {
+    return prismaClient.event.findFirst({ where: { id: event_id }, include: { organizer: true } })
+  }
+
   list(props: EventListingProps = {}): Promise<EventRetrieval<any>[]> {
     const offset = props.offset || 0
     const perPage = props.perPage || 20

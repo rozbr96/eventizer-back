@@ -17,6 +17,7 @@ export interface EventListingProps {
 export default abstract class EventRepository<EventMetadata> {
   abstract count(): Promise<number>
   abstract create(props: EventCreationProps<EventMetadata>): Promise<EventRetrieval<EventMetadata>>
+  abstract get(event_id: number): Promise<EventRetrieval<EventMetadata> | null>
   abstract list(props: EventListingProps): Promise<Array<EventRetrieval<EventMetadata>>>
 }
 
