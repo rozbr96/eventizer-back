@@ -15,7 +15,6 @@ import {
 import type {
   EventCreation,
   EventRetrieval,
-  PurchaseCreation,
   PurchaseRetrieval,
   UserCreation,
   UserRetrieval,
