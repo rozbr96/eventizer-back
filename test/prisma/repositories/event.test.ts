@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 
 import prismaClient from '@/prisma/client.js'
 import { EventRepository } from '@/prisma/repositories/index.js'
-import { createEvent, createUser } from '@test/helpers.js'
+import { createEvents, createUser } from '@test/helpers.js'
 
 describe('EventRepository', () => {
   const eventRepository = new EventRepository()
@@ -41,7 +41,7 @@ describe('EventRepository', () => {
   it('lists existing events', async () => {
     const { id: organizer_id } = await createUser()
 
-    await createEvent({ organizer_id, count: 3 })
+    await createEvents({ organizer_id, count: 3 })
 
     const events = await eventRepository.list()
 

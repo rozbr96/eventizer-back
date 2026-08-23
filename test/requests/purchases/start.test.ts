@@ -14,8 +14,7 @@ describe('POST /purchases/start', () => {
     it('starts purchase', async () => {
       const user = await createUser()
       const token = await authenticate(user)
-      const events = await createEvent({})
-      const event_id = events && events[0] && events[0].id
+      const { id: event_id } = await createEvent({})
 
       const { status } = await doRequest({ event_id }, token)
       const purchase = await prismaClient.purchase.findFirst()

@@ -66,32 +66,44 @@ export const createEvent = async (
   props: {
     data?: Partial<EventCreation<Object>>,
     organizer_id?: number,
+  } = {}
+): Promise<EventRetrieval<Object>> => {
+  const eventRepository = new EventRepository()
+
+  const data = props.data || {}
+  const organizer_id = props.organizer_id || (await createUser()).id
+
+  const eventData: EventCreation<Object> = {
+    address: faker.location.streetAddress(),
+    address_title: faker.location.secondaryAddress(),
+    capacity: faker.number.int({ min: 1, max: 50 }),
+    datetime: faker.date.future(),
+    description: faker.lorem.paragraph(),
+    metadata: createEventMetadata(),
+    title: faker.lorem.slug(),
+    price_in_cents: faker.number.int({ max: 100_000_00 }),
+    status: 'published',
+    ...data
+  }
+
+  return new CreateEventUseCase(eventRepository).execute(eventData, organizer_id)
+}
+
+export const createEvents = async (
+  props: {
+    data?: Partial<EventCreation<Object>>,
+    organizer_id?: number,
     count?: number
   }
 ): Promise<Array<EventRetrieval<Object>>> => {
   const promises = []
-  const eventRepository = new EventRepository()
 
   const data = props.data || {}
   const count = props.count || 1
   const organizer_id = props.organizer_id || (await createUser()).id
 
-  for (let index = 0; index < count; index++) {
-    const eventData: EventCreation<Object> = {
-      address: faker.location.streetAddress(),
-      address_title: faker.location.secondaryAddress(),
-      capacity: faker.number.int({ min: 1, max: 50 }),
-      datetime: faker.date.future(),
-      description: faker.lorem.paragraph(),
-      metadata: createEventMetadata(),
-      title: faker.lorem.slug(),
-      price_in_cents: faker.number.int({ max: 100_000_00 }),
-      status: 'published',
-      ...data
-    }
-
-    promises.push(new CreateEventUseCase(eventRepository).execute(eventData, organizer_id))
-  }
+  for (let index = 0; index < count; index++)
+    promises.push(createEvent({ organizer_id, data }))
 
   return Promise.all(promises)
 }
