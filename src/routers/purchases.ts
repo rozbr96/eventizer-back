@@ -5,7 +5,7 @@ import { authenticationRequired } from '@/middlewares/index.js'
 
 const router = Router()
 
-router.post('/start', [
+router.post('/', [
   authenticationRequired()
 ], purchasesController.start)
 

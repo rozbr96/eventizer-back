@@ -7,9 +7,9 @@ import prismaClient from '@/prisma/client.js'
 import { authenticate, createEvent, createUser } from '@test/helpers.js'
 
 const doRequest = async (data: Object = {}, token: string = '') =>
-  request(app).post('/purchases/start').set('Authorization', `Bearer ${token}`).send(data)
+  request(app).post('/purchases').set('Authorization', `Bearer ${token}`).send(data)
 
-describe('POST /purchases/start', () => {
+describe('POST /purchases', () => {
   describe('when authenticated', () => {
     it('starts purchase', async () => {
       const user = await createUser()
@@ -19,7 +19,7 @@ describe('POST /purchases/start', () => {
       const { status } = await doRequest({ event_id }, token)
       const purchase = await prismaClient.purchase.findFirst()
 
-      expect(status).toBe(200)
+      expect(status).toBe(201)
       expect(purchase).toMatchObject({
         status: 'eventConfirmation',
         event_id, client_id: user.id

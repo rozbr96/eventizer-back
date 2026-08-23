@@ -12,7 +12,7 @@ const start = (req: Request, resp: Response) => {
 
   new StartPurchaseUseCase(purchaseRepository)
     .execute({ event_id, client_id })
-    .then(() => { resp.end() })
+    .then(() => { resp.status(201).end() })
     .catch((err) => { resp.status(400).json(err) })
 }
 
