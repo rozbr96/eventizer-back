@@ -66,7 +66,7 @@ describe('GET /movies', () => {
 
 const expectedSearchResult = {
   "page": 1,
-  "total_result": 2,
+  "total_count": 2,
   "total_pages": 1,
   "items": [
     {
@@ -119,7 +119,7 @@ const expectedSearchResult = {
 
 const searchResult = {
   page: expectedSearchResult.page,
-  total_result: expectedSearchResult.total_result,
+  total_results: expectedSearchResult.total_count,
   total_pages: expectedSearchResult.total_pages,
   results: expectedSearchResult.items
 }

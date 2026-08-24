@@ -31,6 +31,6 @@ export interface MovieSearchResult {
   page: number
   results: Array<Movie>
   total_pages: number
-  total_result: number
+  total_results: number
 }
 
