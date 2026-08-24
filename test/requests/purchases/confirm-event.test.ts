@@ -29,5 +29,26 @@ describe('POST /purchases/:purchase-id/confirm-event', () => {
       expect(status).toBe(200)
       expect(purchase?.status).toBe('personalInfoSupplying')
     })
+
+    it('fails due to wrong step', async () => {
+      const user = await createUser()
+      const token = await authenticate(user)
+      const event = await createEvent()
+
+      const { id: purchaseId } = await prismaClient.purchase.create({
+        data: {
+          event: { connect: { id: event.id } },
+          client: { connect: { id: user.id } },
+          status: 'payment'
+        }
+      })
+
+      const { status, body } = await doRequest(purchaseId, {}, token)
+      const purchase = await prismaClient.purchase.findFirst()
+
+      expect(status).toBe(403)
+      expect(body).toStrictEqual({ detail: 'Wrong step' })
+      expect(purchase?.status).toBe('payment')
+    })
   })
 })

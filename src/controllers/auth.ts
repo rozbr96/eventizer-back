@@ -43,9 +43,9 @@ const signup = (req: Request, resp: Response, next: NextFunction) => {
 
   new CreateUserUseCase(userRepository)
     .execute(req.body)
-    .then(() =>
+    .then((user) =>
       new CreateUserTokenUseCase(userTokenRepository)
-        .execute({ email: req.body.email, name: req.body.name, role: 'client' })
+        .execute({ id: user.id, email: user.email, name: user.name, role: user.role })
     )
     .then(() => { resp.end() })
     .catch((err) => { next(err || {}) })

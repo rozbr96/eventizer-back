@@ -27,6 +27,12 @@ type AdvancePurchaseStepProps =
   | AdvancePurchaseToPaymentStep
   | AdvancePurchaseToPaymentDoneStep
 
+const previousStatus = {
+  personalInfoSupplying: 'eventConfirmation',
+  payment: 'personalInfoSupplying',
+  done: 'payment'
+}
+
 export class AdvancePurchaseStep<EventMetadata> {
   constructor(
     private purchaseRepository: PurchaseRepository<EventMetadata>,
@@ -34,6 +40,11 @@ export class AdvancePurchaseStep<EventMetadata> {
   ) { }
 
   async execute(props: AdvancePurchaseStepProps) {
+    const currentPurchase = await this.purchaseRepository.get(props.id)
+
+    if (currentPurchase.status != previousStatus[props.status])
+      throw { status: 403, detail: 'Wrong step' }
+
     const purchase = await this.purchaseRepository.update(props.id, props)
 
     if (props.status != 'done') return purchase
@@ -42,4 +53,3 @@ export class AdvancePurchaseStep<EventMetadata> {
       .execute({ event_id: purchase.event.id, purchase_id: purchase.id, holder: purchase.holder || '' })
   }
 }
-
