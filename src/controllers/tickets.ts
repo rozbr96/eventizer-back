@@ -1,7 +1,10 @@
 
 import type { NextFunction, Request, Response } from 'express'
 
-import { TicketRepository } from '@/prisma/repositories/index.js'
+import {
+  TicketRepository,
+  TicketVerificationRepository
+} from '@/prisma/repositories/index.js'
 import { GetTicketUseCase, VerifyTicketUseCase } from '@/core/use-cases/index.js'
 
 const get = (req: Request<{ ticketId: string }>, resp: Response, next: NextFunction) => {
@@ -15,9 +18,14 @@ const get = (req: Request<{ ticketId: string }>, resp: Response, next: NextFunct
 
 const verify = (req: Request<{ code: string }>, resp: Response, next: NextFunction) => {
   const ticketsRepostiory = new TicketRepository()
+  const ticketVerificationRepository = new TicketVerificationRepository()
 
-  new VerifyTicketUseCase(ticketsRepostiory)
-    .execute({ code: req.params.code })
+  new VerifyTicketUseCase(ticketsRepostiory, ticketVerificationRepository)
+    .execute({
+      code: req.params.code,
+      document_number: req.body.document_number,
+      verified_by_id: req.app.locals.user.id
+    })
     .then(() => { resp.end() })
     .catch((err) => { next(err || {}) })
 }

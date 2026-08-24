@@ -1,19 +1,32 @@
 
-import type { TicketRepository } from '@/core/repositories/index.js';
+import type {
+  TicketRepository,
+  TicketVerificationRepository
+} from '@/core/repositories/index.js'
 
 export class VerifyTicketUseCase {
-  constructor(private repository: TicketRepository) { }
+  constructor(
+    private repository: TicketRepository,
+    private ticketVerificationRepository: TicketVerificationRepository
+  ) { }
 
-  execute(props: { code: string }) {
-    return new Promise<void>(async (resolve, reject) => {
-      const ticket = await this.repository.findByCode(props.code)
+  async execute(props: { code: string, document_number: string, verified_by_id: number }): Promise<void> {
+    const ticket = await this.repository.findByCode(props.code)
 
-      if (!ticket) return reject({ detail: 'Ticket not found' })
-      if (ticket.consumed) return reject({ detail: 'Ticket already used' })
+    if (!ticket) throw { detail: 'Ticket not found' }
 
-      await this.repository.update(ticket.code, { consumed: true })
+    const succeed = !ticket.consumed && ticket.document_number === props.document_number
 
-      resolve()
+    await this.ticketVerificationRepository.create({
+      ticket_id: ticket.id,
+      verified_by_id: props.verified_by_id,
+      document_number: props.document_number,
+      succeed
     })
+
+    if (ticket.consumed) throw { detail: 'Ticket already used' }
+    if (!succeed) throw { detail: 'Invalid Document' }
+
+    await this.repository.update(ticket.code, { consumed: true })
   }
 }
