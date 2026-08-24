@@ -1,6 +1,7 @@
 
 export * from './event.js'
 export * from './purchase.js'
+export * from './ticket-verification.js'
 
 export { default as UserRepository } from './user.js'
 export { default as UserTokenRepository } from './user-token.js'

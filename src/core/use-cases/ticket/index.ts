@@ -2,3 +2,4 @@
 export * from './create.js'
 export * from './get.js'
 export * from './verify.js'
+export * from './list-verifications.js'

@@ -5,7 +5,11 @@ import {
   TicketRepository,
   TicketVerificationRepository
 } from '@/prisma/repositories/index.js'
-import { GetTicketUseCase, VerifyTicketUseCase } from '@/core/use-cases/index.js'
+import {
+  GetTicketUseCase,
+  ListTicketVerificationsUseCase,
+  VerifyTicketUseCase
+} from '@/core/use-cases/index.js'
 
 const get = (req: Request<{ ticketId: string }>, resp: Response, next: NextFunction) => {
   const ticketsRepostiory = new TicketRepository()
@@ -16,13 +20,13 @@ const get = (req: Request<{ ticketId: string }>, resp: Response, next: NextFunct
     .catch((err) => { next(err || {}) })
 }
 
-const verify = (req: Request<{ code: string }>, resp: Response, next: NextFunction) => {
+const verify = (req: Request, resp: Response, next: NextFunction) => {
   const ticketsRepostiory = new TicketRepository()
   const ticketVerificationRepository = new TicketVerificationRepository()
 
   new VerifyTicketUseCase(ticketsRepostiory, ticketVerificationRepository)
     .execute({
-      code: req.params.code,
+      code: req.body.code,
       document_number: req.body.document_number,
       verified_by_id: req.app.locals.user.id
     })
@@ -30,4 +34,17 @@ const verify = (req: Request<{ code: string }>, resp: Response, next: NextFuncti
     .catch((err) => { next(err || {}) })
 }
 
-export default { get, verify }
+const listVerifications = (req: Request, resp: Response, next: NextFunction) => {
+  const ticketVerificationRepository = new TicketVerificationRepository()
+
+  new ListTicketVerificationsUseCase(ticketVerificationRepository)
+    .execute({
+      verifiedById: req.app.locals.user.id,
+      page: req.app.locals.query.page,
+      itemsPerPage: req.app.locals.query.itemsPerPage
+    })
+    .then((verifications) => { resp.json(verifications) })
+    .catch((err) => { next(err || {}) })
+}
+
+export default { get, verify, listVerifications }
