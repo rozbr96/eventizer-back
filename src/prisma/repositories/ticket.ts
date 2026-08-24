@@ -11,6 +11,7 @@ interface CreateTicketUseCaseProps {
   purchase_id: number
   event_id: number
   holder: string
+  document_number: string
 }
 
 export default class implements TicketRepository<any> {
@@ -18,6 +19,7 @@ export default class implements TicketRepository<any> {
     const ticketData: TicketCreateInput = {
       code: crypto.randomUUID(),
       holder: props.holder,
+      document_number: props.document_number,
       purchase: { connect: { id: props.purchase_id } },
       event: { connect: { id: props.event_id } }
     }

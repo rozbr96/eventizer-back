@@ -16,6 +16,7 @@ interface AdvancePurchaseToPersonalInfoSupplyingStep extends PurchaseProps {
 interface AdvancePurchaseToPaymentStep extends PurchaseProps {
   status: 'payment'
   holder: string
+  document_number: string
 }
 
 interface AdvancePurchaseToPaymentDoneStep extends PurchaseProps {
@@ -50,6 +51,11 @@ export class AdvancePurchaseStep<EventMetadata> {
     if (props.status != 'done') return purchase
 
     return await new CreateTicketUseCase(this.ticketRepository)
-      .execute({ event_id: purchase.event.id, purchase_id: purchase.id, holder: purchase.holder || '' })
+      .execute({
+        event_id: purchase.event.id,
+        purchase_id: purchase.id,
+        holder: purchase.holder || '',
+        document_number: purchase.document_number || ''
+      })
   }
 }

@@ -9,14 +9,15 @@ describe('GetTicketUseCase', () => {
   it('gets ticket by id', async () => {
     const ticketRepository = new TicketRepository()
     const getTicketUseCase = new GetTicketUseCase(ticketRepository)
-    const ticket = await createTicket({ holder: 'Holder' })
+    const ticket = await createTicket({ holder: 'Holder', document_number: '123456789' })
 
     const result = await getTicketUseCase.execute(ticket.id)
 
     expect(result).toMatchObject({
       id: ticket.id,
       code: ticket.code,
-      holder: 'Holder'
+      holder: 'Holder',
+      document_number: '123456789'
     })
   })
 })

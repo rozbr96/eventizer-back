@@ -5,6 +5,7 @@ interface TicketCreationProps {
   purchase_id: number
   event_id: number
   holder: string
+  document_number: string
 }
 export default abstract class TicketRepository<EventMetadata = any> {
   abstract create(props: TicketCreationProps): Promise<TicketRetrieval<EventMetadata>>

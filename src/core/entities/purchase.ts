@@ -12,6 +12,7 @@ export interface PurchaseRetrieval<EventMetadata> {
   event_id: number
   event: EventRetrieval<EventMetadata>
   holder: string
+  document_number: string
 }
 
 export interface PurchaseCreation<EventMetadata> {
@@ -21,5 +22,6 @@ export interface PurchaseCreation<EventMetadata> {
 
 export interface PurchaseEdition {
   holder?: string
+  document_number?: string
   status?: PurchaseStatus
 }

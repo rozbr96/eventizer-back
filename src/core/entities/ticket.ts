@@ -6,6 +6,7 @@ import type {
 
 export interface TicketCreation {
   holder: string
+  document_number: string
   purchase_id: number
   event_id: number
 }
@@ -21,4 +22,3 @@ export interface TicketRetrieval<EventMetadata> extends TicketCreation {
 export interface TicketEdition {
   consumed?: boolean
 }
-

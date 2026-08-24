@@ -41,7 +41,7 @@ const supplyPersonalInfo = (req: Request<{ purchaseId: string }>, resp: Response
   const purchaseId = Number.parseInt(req.params.purchaseId)
 
   new AdvancePurchaseStep(purchaseRepository, ticketRepository)
-    .execute({ status: 'payment', id: purchaseId, holder: req.body.holder })
+    .execute({ status: 'payment', id: purchaseId, holder: req.body.holder, document_number: req.body.document_number })
     .then((purchase) => { resp.json(purchase) })
     .catch((err) => { next(err || {}) })
 }

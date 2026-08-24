@@ -73,6 +73,7 @@ model Purchase {
   client     User           @relation(fields: [client_id], references: [id])
   client_id  Int
   holder     String         @default("")
+  document_number String    @default("")
   expires_at DateTime       @default(dbgenerated("NOW() + interval '20 minutes'"))
   event_id   Int
   tickets    Ticket[]
@@ -84,6 +85,7 @@ model Ticket {
   id          Int      @id @default(autoincrement())
   code        String   @unique
   holder      String
+  document_number String @default("")
   consumed    Boolean  @default(false)
   purchase    Purchase @relation(fields: [purchase_id], references: [id])
   purchase_id Int

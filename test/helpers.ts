@@ -118,6 +118,7 @@ export const createPurchase = async (
     event_id: number
     status: PurchaseStatus
     holder: string
+    document_number: string
     expires_at: Date
   }> = {}
 ): Promise<PurchaseRetrieval<any>> => {
@@ -125,12 +126,14 @@ export const createPurchase = async (
   const event_id = props.event_id || (await createEvent()).id
   const status = props.status || 'payment'
   const holder = props.holder || ''
+  const document_number = props.document_number || '123456789'
   const expires_at = props.expires_at || new Date(Date.now() + 60 * 15 * 1000)
 
   return prismaClient.purchase.create({
     data: {
       status,
       holder,
+      document_number,
       expires_at,
       event: { connect: { id: event_id } },
       client: { connect: { id: client_id } }
@@ -144,12 +147,14 @@ export const createTicket = async (
     purchase_id: number
     event_id: number
     holder: string
+    document_number: string
     code: string
     consumed: boolean
   }> = {}
 ) => {
   const code = props.code || crypto.randomUUID()
   const holder = props.holder || ''
+  const document_number = props.document_number || '123456789'
   const consumed = props.consumed || false
   const event_id = props.event_id || (await createEvent()).id
   const purchase_id = props.purchase_id || (await createPurchase()).id
@@ -158,6 +163,7 @@ export const createTicket = async (
     data: {
       code,
       holder,
+      document_number,
       consumed,
       event: { connect: { id: event_id } },
       purchase: { connect: { id: purchase_id } }

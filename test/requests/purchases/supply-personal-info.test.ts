@@ -24,14 +24,15 @@ describe('POST /purchases/:purchase-id/supply-personal-info', () => {
         }
       })
 
-      const { status, body } = await doRequest(purchaseId, { holder: 'Holder' }, token)
+      const { status, body } = await doRequest(purchaseId, { holder: 'Holder', document_number: '123456789' }, token)
       const purchase = await prismaClient.purchase.findFirst()
 
       expect(status).toBe(200)
-      expect(purchase).toMatchObject({ holder: 'Holder', status: 'payment' })
+      expect(purchase).toMatchObject({ holder: 'Holder', document_number: '123456789', status: 'payment' })
       expect(body).toMatchObject({
         id: purchaseId,
         holder: 'Holder',
+        document_number: '123456789',
         status: 'payment',
         event_id: event.id,
         client_id: user.id
@@ -50,12 +51,12 @@ describe('POST /purchases/:purchase-id/supply-personal-info', () => {
         }
       })
 
-      const { status, body } = await doRequest(purchaseId, { holder: 'Holder' }, token)
+      const { status, body } = await doRequest(purchaseId, { holder: 'Holder', document_number: '123456789' }, token)
       const purchase = await prismaClient.purchase.findFirst()
 
       expect(status).toBe(403)
       expect(body).toStrictEqual({ detail: 'Wrong step' })
-      expect(purchase).toMatchObject({ holder: '', status: 'eventConfirmation' })
+      expect(purchase).toMatchObject({ holder: '', document_number: '', status: 'eventConfirmation' })
     })
   })
 })

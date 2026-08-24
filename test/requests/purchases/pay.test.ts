@@ -19,6 +19,7 @@ describe('POST /purchases/:purchase-id/pay', () => {
       const { id: purchaseId } = await prismaClient.purchase.create({
         data: {
           holder: 'Holder',
+          document_number: '123456789',
           status: 'payment',
           event: { connect: { id: event.id } },
           client: { connect: { id: user.id } }
@@ -36,6 +37,7 @@ describe('POST /purchases/:purchase-id/pay', () => {
         purchase_id: purchaseId,
         event_id: event.id,
         holder: 'Holder',
+        document_number: '123456789',
         consumed: false
       })
     })

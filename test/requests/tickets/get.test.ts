@@ -12,7 +12,7 @@ describe('GET /tickets/:ticket-id', () => {
   it('gets ticket', async () => {
     const user = await createUser()
     const token = await authenticate(user)
-    const ticket = await createTicket({ holder: 'Holder' })
+    const ticket = await createTicket({ holder: 'Holder', document_number: '123456789' })
 
     const { status, body } = await doRequest(ticket.id, token)
 
@@ -21,6 +21,7 @@ describe('GET /tickets/:ticket-id', () => {
       id: ticket.id,
       code: ticket.code,
       holder: 'Holder',
+      document_number: '123456789',
       consumed: false,
       purchase_id: ticket.purchase_id,
       event_id: ticket.event_id

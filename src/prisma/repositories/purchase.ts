@@ -35,6 +35,7 @@ export default class implements PurchaseRepository<any> {
     const eventData: PurchaseUpdateInput = {}
 
     if (data.holder) eventData.holder = data.holder
+    if (data.document_number !== undefined) eventData.document_number = data.document_number
     if (data.status) eventData.status = data.status
 
     return prismaClient.purchase.update({
