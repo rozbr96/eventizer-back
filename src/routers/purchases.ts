@@ -1,14 +1,25 @@
 
 import { Router } from 'express'
+import * as zod from 'zod'
+
 import { purchasesController } from '@/controllers/index.js'
-import { authenticationRequired } from '@/middlewares/index.js'
+import { authenticationRequired, queryValidation } from '@/middlewares/index.js'
 
 const router = Router()
+
+const purchaseListingParamsSchema = zod.object({
+  page: zod.string().transform((page) => Number.parseInt(page.replaceAll(/\D/g, '') || '1')).optional(),
+  itemsPerPage: zod.string().transform((page) => Number.parseInt(page.replaceAll(/\D/g, '') || '1')).optional()
+})
 
 router.post('/', [
   authenticationRequired()
 ], purchasesController.start)
 
+router.get('/', [
+  authenticationRequired(),
+  queryValidation(purchaseListingParamsSchema)
+], purchasesController.list)
 
 const purchaseRouter = Router({ mergeParams: true })
 purchaseRouter.get('/', purchasesController.get)

@@ -35,14 +35,14 @@ enum PurchaseStatus {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  password  String
-  name      String
-  role      Role       @default(client)
-  active    Boolean    @default(false)
-  events    Event[]
-  purchases Purchase[]
+  id                   Int                  @id @default(autoincrement())
+  email                String               @unique
+  password             String
+  name                 String
+  role                 Role                 @default(client)
+  active               Boolean              @default(false)
+  events               Event[]
+  purchases            Purchase[]
   ticket_verifications TicketVerification[]
 
   @@map("users")
@@ -68,31 +68,31 @@ model Event {
 }
 
 model Purchase {
-  id         Int            @id @default(autoincrement())
-  event      Event          @relation(fields: [event_id], references: [id])
-  status     PurchaseStatus @default(eventConfirmation)
-  client     User           @relation(fields: [client_id], references: [id])
-  client_id  Int
-  holder     String         @default("")
-  document_number String    @default("")
-  expires_at DateTime       @default(dbgenerated("NOW() + interval '20 minutes'"))
-  event_id   Int
-  tickets    Ticket[]
+  id              Int            @id @default(autoincrement())
+  event           Event          @relation(fields: [event_id], references: [id])
+  status          PurchaseStatus @default(eventConfirmation)
+  client          User           @relation(fields: [client_id], references: [id])
+  client_id       Int
+  holder          String         @default("")
+  document_number String         @default("")
+  expires_at      DateTime       @default(dbgenerated("NOW() + interval '20 minutes'"))
+  event_id        Int
+  ticket          Ticket?        @relation("PurchaseTicket")
 
   @@map("purchases")
 }
 
 model Ticket {
-  id          Int      @id @default(autoincrement())
-  code        String   @unique
-  holder      String
-  document_number String @default("")
-  consumed    Boolean  @default(false)
-  purchase    Purchase @relation(fields: [purchase_id], references: [id])
-  purchase_id Int
-  event       Event    @relation(fields: [event_id], references: [id])
-  event_id    Int
-  verifications TicketVerification[]
+  id              Int                  @id @default(autoincrement())
+  code            String               @unique
+  holder          String
+  document_number String               @default("")
+  consumed        Boolean              @default(false)
+  purchase        Purchase             @relation("PurchaseTicket", fields: [purchase_id], references: [id])
+  purchase_id     Int                  @unique
+  event           Event                @relation(fields: [event_id], references: [id])
+  event_id        Int
+  verifications   TicketVerification[]
 
   @@map("tickets")
 }

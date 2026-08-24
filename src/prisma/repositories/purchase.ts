@@ -2,7 +2,7 @@
 import prismaClient from '@/prisma/client.js'
 
 import type { PurchaseEdition, PurchaseRetrieval } from '@/core/entities/index.js'
-import type { PurchaseCreationProps, PurchaseRepository } from '@/core/repositories/index.js'
+import type { PurchaseCreationProps, PurchaseListingProps, PurchaseRepository } from '@/core/repositories/index.js'
 import type { PurchaseUpdateInput } from '../generated/models.js'
 
 export default class implements PurchaseRepository<any> {
@@ -18,6 +18,12 @@ export default class implements PurchaseRepository<any> {
     })
   }
 
+  countByClient(clientId: number): Promise<number> {
+    return prismaClient.purchase.count({
+      where: { client_id: clientId }
+    })
+  }
+
   create(props: PurchaseCreationProps): Promise<PurchaseRetrieval<any>> {
     const { event_id, client_id } = props
 
@@ -26,7 +32,7 @@ export default class implements PurchaseRepository<any> {
         client: { connect: { id: client_id } },
         event: { connect: { id: event_id } }
       },
-      include: { client: true, event: { include: { organizer: true } } }
+      include: this.purchaseIncludes()
     })
   }
 
@@ -36,10 +42,23 @@ export default class implements PurchaseRepository<any> {
         .purchase
         .findUnique({
           where: { id },
-          include: { client: true, event: { include: { organizer: true } } }
+          include: this.purchaseIncludes()
         })
 
       purchase ? resolve(purchase) : reject()
+    })
+  }
+
+  listByClient(clientId: number, props: PurchaseListingProps = {}): Promise<Array<PurchaseRetrieval<any>>> {
+    const offset = props.offset || 0
+    const perPage = props.perPage || 20
+
+    return prismaClient.purchase.findMany({
+      where: { client_id: clientId },
+      include: this.purchaseIncludesWithTicket(),
+      orderBy: { id: 'asc' },
+      skip: offset,
+      take: perPage
     })
   }
 
@@ -53,7 +72,29 @@ export default class implements PurchaseRepository<any> {
     return prismaClient.purchase.update({
       where: { id: purchaseId },
       data: eventData,
-      include: { client: true, event: { include: { organizer: true } } }
+      include: this.purchaseIncludes()
     })
+  }
+
+  private purchaseIncludes() {
+    return {
+      client: true,
+      event: this.eventIncludes()
+    } as const
+  }
+
+  private purchaseIncludesWithTicket() {
+    return {
+      ...this.purchaseIncludes(),
+      ticket: true
+    } as const
+  }
+
+  private eventIncludes() {
+    return {
+      include: {
+        organizer: true
+      }
+    } as const
   }
 }

@@ -2,7 +2,12 @@
 import type { NextFunction, Request, Response } from 'express'
 
 import { EventRepository, PurchaseRepository, TicketRepository } from '@/prisma/repositories/index.js'
-import { AdvancePurchaseStep, GetPurchaseUseCase, StartPurchaseUseCase } from '@/core/use-cases/index.js'
+import {
+  AdvancePurchaseStep,
+  GetPurchaseUseCase,
+  ListPurchasesUseCase,
+  StartPurchaseUseCase
+} from '@/core/use-cases/index.js'
 
 const purchaseRepository = new PurchaseRepository()
 const ticketRepository = new TicketRepository()
@@ -14,6 +19,19 @@ const get = (req: Request<{ purchaseId: string }>, resp: Response, next: NextFun
   new GetPurchaseUseCase(purchaseRepository)
     .execute(purchase_id)
     .then((purchase) => { resp.json(purchase) })
+    .catch((err) => { next(err || {}) })
+}
+
+const list = (req: Request, resp: Response, next: NextFunction) => {
+  const { id: clientId } = req.app.locals.user
+
+  new ListPurchasesUseCase(purchaseRepository)
+    .execute({
+      clientId,
+      page: req.app.locals.query.page,
+      itemsPerPage: req.app.locals.query.itemsPerPage
+    })
+    .then((purchases) => { resp.json(purchases) })
     .catch((err) => { next(err || {}) })
 }
 
@@ -54,4 +72,4 @@ const pay = (req: Request<{ purchaseId: string }>, resp: Response, next: NextFun
     .catch((err) => { next(err || {}) })
 }
 
-export default { get, start, confirmEvent, supplyPersonalInfo, pay }
+export default { get, list, start, confirmEvent, supplyPersonalInfo, pay }
