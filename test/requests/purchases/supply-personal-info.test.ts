@@ -24,11 +24,18 @@ describe('POST /purchases/:purchase-id/supply-personal-info', () => {
         }
       })
 
-      const { status } = await doRequest(purchaseId, { holder: 'Holder' }, token)
+      const { status, body } = await doRequest(purchaseId, { holder: 'Holder' }, token)
       const purchase = await prismaClient.purchase.findFirst()
 
       expect(status).toBe(200)
       expect(purchase).toMatchObject({ holder: 'Holder', status: 'payment' })
+      expect(body).toMatchObject({
+        id: purchaseId,
+        holder: 'Holder',
+        status: 'payment',
+        event_id: event.id,
+        client_id: user.id
+      })
     })
   })
 })

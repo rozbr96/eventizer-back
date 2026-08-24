@@ -42,7 +42,7 @@ const supplyPersonalInfo = (req: Request<{ purchaseId: string }>, resp: Response
 
   new AdvancePurchaseStep(purchaseRepository, ticketRepository)
     .execute({ status: 'payment', id: purchaseId, holder: req.body.holder })
-    .then(() => { resp.end() })
+    .then((purchase) => { resp.json(purchase) })
     .catch((err) => { next(err || {}) })
 }
 
