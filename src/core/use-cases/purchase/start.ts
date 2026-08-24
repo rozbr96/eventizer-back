@@ -1,5 +1,5 @@
 
-import type { PurchaseRepository } from '@/core/repositories/index.js'
+import type { EventRepository, PurchaseRepository } from '@/core/repositories/index.js'
 
 interface StartPurchaseUseCaseProps {
   client_id: number
@@ -7,9 +7,20 @@ interface StartPurchaseUseCaseProps {
 }
 
 export class StartPurchaseUseCase<EventMetadata> {
-  constructor(private repository: PurchaseRepository<EventMetadata>) { }
+  constructor(
+    private purchaseRepository: PurchaseRepository<EventMetadata>,
+    private eventRepository: EventRepository<EventMetadata>
+  ) { }
 
-  execute(props: StartPurchaseUseCaseProps) {
-    return this.repository.create(props)
+  async execute(props: StartPurchaseUseCaseProps) {
+    const [event, activePurchasesCount] = await Promise.all([
+      this.eventRepository.get(props.event_id),
+      this.purchaseRepository.countActiveByEvent(props.event_id)
+    ])
+
+    if (!event) throw { detail: 'Event Não Encontrado' }
+    if (activePurchasesCount >= event.capacity) throw { detail: 'Sem Vagas' }
+
+    return this.purchaseRepository.create(props)
   }
 }

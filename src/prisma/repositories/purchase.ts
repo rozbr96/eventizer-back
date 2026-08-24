@@ -6,6 +6,18 @@ import type { PurchaseCreationProps, PurchaseRepository } from '@/core/repositor
 import type { PurchaseUpdateInput } from '../generated/models.js'
 
 export default class implements PurchaseRepository<any> {
+  countActiveByEvent(eventId: number): Promise<number> {
+    return prismaClient.purchase.count({
+      where: {
+        event_id: eventId,
+        OR: [
+          { status: 'done' },
+          { expires_at: { gte: new Date() } }
+        ]
+      }
+    })
+  }
+
   create(props: PurchaseCreationProps): Promise<PurchaseRetrieval<any>> {
     const { event_id, client_id } = props
 

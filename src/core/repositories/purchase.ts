@@ -7,6 +7,8 @@ export interface PurchaseCreationProps {
 }
 
 export default abstract class PurchaseRepository<EventMetadata> {
+  abstract countActiveByEvent(eventId: number): Promise<number>
+
   abstract create(props: PurchaseCreationProps): Promise<PurchaseRetrieval<EventMetadata>>
 
   abstract get(purchaseId: number): Promise<PurchaseRetrieval<EventMetadata>>
@@ -16,4 +18,3 @@ export default abstract class PurchaseRepository<EventMetadata> {
     data: PurchaseEdition
   ): Promise<PurchaseRetrieval<EventMetadata>>
 }
-
