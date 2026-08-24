@@ -21,6 +21,10 @@ const activate = (req: Request, resp: Response, next: NextFunction) => {
     .catch((err) => { next(err || {}) })
 }
 
+const state = (req: Request, resp: Response) => {
+  resp.json(req.app.locals.user)
+}
+
 const login = (req: Request, resp: Response, next: NextFunction) => {
   const userRepository = new UserRepository()
   const userTokenRepository = new UserTokenRepository()
@@ -51,4 +55,4 @@ const signup = (req: Request, resp: Response, next: NextFunction) => {
     .catch((err) => { next(err || {}) })
 }
 
-export default { activate, login, signup }
+export default { activate, state, login, signup }

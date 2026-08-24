@@ -2,7 +2,7 @@
 import { Router } from 'express'
 import * as zod from 'zod'
 
-import { bodyValidation } from '@/middlewares/index.js'
+import { authenticationRequired, bodyValidation } from '@/middlewares/index.js'
 import { authController } from '@/controllers/index.js'
 
 const router = Router()
@@ -22,6 +22,10 @@ const userLoginSchema = zod.object({
   email: zod.email(),
   password: zod.string().nonempty({ error: 'Cannot be blank' })
 })
+
+router.get('/state', [
+  authenticationRequired(),
+], authController.state)
 
 router.post('/signup', [
   bodyValidation(userSignupSchema),
