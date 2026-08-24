@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import app from '@/app.js'
 import { authenticate, createUser } from '@test/helpers.js'
 
-describe('POST /movies/search', () => {
+describe('GET /movies', () => {
   beforeEach(() => {
     vi.stubGlobal('fetch', vi.fn(() => {
       return Promise.resolve({
@@ -16,8 +16,8 @@ describe('POST /movies/search', () => {
   })
 
   const doRequest = async (token: string, data: any = {}) =>
-    await request(app).post('/movies/search')
-      .set('Cookie', `token=${token}`).send(data)
+    await request(app).get('/movies')
+      .set('Cookie', `token=${token}`).query(data)
 
   describe('with success', () => {
     it('returns data from the external API', async () => {
@@ -26,7 +26,7 @@ describe('POST /movies/search', () => {
 
       const response = await doRequest(token)
 
-      expect(response.body).toStrictEqual(searchResult)
+      expect(response.body).toStrictEqual(expectedSearchResult)
     })
 
     it('returns a cached response', async () => {
@@ -37,7 +37,7 @@ describe('POST /movies/search', () => {
       const secondResponse = await doRequest(token)
 
       expect(firstResponse.body).toStrictEqual(secondResponse.body)
-      expect(secondResponse.body).toStrictEqual(searchResult)
+      expect(secondResponse.body).toStrictEqual(expectedSearchResult)
       expect(fetch).toHaveBeenCalledOnce()
     })
   })
@@ -64,11 +64,11 @@ describe('POST /movies/search', () => {
   })
 })
 
-const searchResult = {
+const expectedSearchResult = {
   "page": 1,
   "total_result": 2,
   "total_pages": 1,
-  "results": [
+  "items": [
     {
       "adult": false,
       "backdrop_path": "/1ZFUt0LtYkF568iCkRXCScgBP5g.jpg",
@@ -115,4 +115,11 @@ const searchResult = {
       "vote_count": 96
     }
   ]
+}
+
+const searchResult = {
+  page: expectedSearchResult.page,
+  total_result: expectedSearchResult.total_result,
+  total_pages: expectedSearchResult.total_pages,
+  results: expectedSearchResult.items
 }
