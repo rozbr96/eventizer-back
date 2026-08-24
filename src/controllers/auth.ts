@@ -5,6 +5,7 @@ import {
   ActivateUserUseCase,
   CreateUserUseCase,
   CreateUserTokenUseCase,
+  DeleteUserTokenUseCase,
   LoginUserUseCase,
 } from '@/core/use-cases/index.js'
 
@@ -41,6 +42,21 @@ const login = (req: Request, resp: Response, next: NextFunction) => {
     }).catch((err) => { next(err || {}) })
 }
 
+const logout = (req: Request, resp: Response, next: NextFunction) => {
+  const userTokenRepository = new UserTokenRepository()
+
+  new DeleteUserTokenUseCase(userTokenRepository)
+    .execute(req.app.locals.user)
+    .then(() => {
+      resp.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      }).end()
+    })
+    .catch((err) => { next(err || {}) })
+}
+
 const signup = (req: Request, resp: Response, next: NextFunction) => {
   const userRepository = new UserRepository()
   const userTokenRepository = new UserTokenRepository()
@@ -55,4 +71,4 @@ const signup = (req: Request, resp: Response, next: NextFunction) => {
     .catch((err) => { next(err || {}) })
 }
 
-export default { activate, state, login, signup }
+export default { activate, state, login, logout, signup }

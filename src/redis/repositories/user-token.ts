@@ -8,6 +8,12 @@ export default class extends UserTokenRepository {
     return redisClient.get(email)
   }
 
+  delete(email: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      redisClient.del(email).then(() => { resolve() }).catch(reject)
+    })
+  }
+
   set(email: string, token: string, expiresIn?: number): Promise<void> {
     const options: SetOptions = {}
 
@@ -18,4 +24,3 @@ export default class extends UserTokenRepository {
     })
   }
 }
-

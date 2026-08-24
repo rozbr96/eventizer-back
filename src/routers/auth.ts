@@ -39,4 +39,8 @@ router.post('/login', [
   bodyValidation(userLoginSchema),
 ], authController.login)
 
+router.post('/logout', [
+  authenticationRequired(),
+], authController.logout)
+
 export default router
