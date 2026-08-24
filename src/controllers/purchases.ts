@@ -51,7 +51,7 @@ const pay = (req: Request<{ purchaseId: string }>, resp: Response, next: NextFun
 
   new AdvancePurchaseStep(purchaseRepository, ticketRepository)
     .execute({ status: 'done', id: purchaseId })
-    .then(() => { resp.end() })
+    .then((ticket) => { resp.json(ticket).end() })
     .catch((err) => { next(err || {}) })
 }
 
