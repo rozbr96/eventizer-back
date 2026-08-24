@@ -43,6 +43,7 @@ model User {
   active    Boolean    @default(false)
   events    Event[]
   purchases Purchase[]
+  ticket_verifications TicketVerification[]
 
   @@map("users")
 }
@@ -91,8 +92,22 @@ model Ticket {
   purchase_id Int
   event       Event    @relation(fields: [event_id], references: [id])
   event_id    Int
+  verifications TicketVerification[]
 
   @@map("tickets")
+}
+
+model TicketVerification {
+  id              Int      @id @default(autoincrement())
+  ticket          Ticket   @relation(fields: [ticket_id], references: [id])
+  ticket_id       Int
+  succeed         Boolean
+  when            DateTime @default(now())
+  verified_by     User     @relation(fields: [verified_by_id], references: [id])
+  verified_by_id  Int
+  document_number String
+
+  @@map("ticket_verifications")
 }
 
 model SearchResult {
