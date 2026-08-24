@@ -10,15 +10,21 @@ import { bodyValidation } from '@/middlewares/index.js'
 const router = Router()
 
 const eventCreationSchema = zod.object({
-  organizer_id: zod.number(),
   event: zod.object({
     title: zod.string(),
     description: zod.string(),
-    datetime: zod.iso.datetime(),
+    datetime: zod.iso.datetime()
+      .refine((datetime) => {
+        const date = new Date(datetime)
+
+        if (Number.isNaN(date.getTime())) return true
+
+        return date > new Date()
+      }, { error: 'Must be a future date' }),
     address: zod.string(),
     address_title: zod.string(),
     capacity: zod.number().min(1, { error: 'Must be positive' }),
-    price_in_cents: zod.number().min(1, { error: 'Must be positive' }),
+    price_in_cents: zod.number().min(0, { error: 'Must not be negative' }),
     metadata: zod.any(),
   })
 })
@@ -46,4 +52,3 @@ router.get('/:event_id', [
 ], eventsController.get)
 
 export default router
-

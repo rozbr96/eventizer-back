@@ -9,7 +9,7 @@ const create = (req: Request, resp: Response, next: NextFunction) => {
 
   new CreateEventUseCase(eventRepository)
     .execute(req.body.event, req.app.locals.user.id)
-    .then(() => { resp.status(201).end() })
+    .then((event) => { resp.status(201).json(event) })
     .catch((err) => { next(err || {}) })
 }
 

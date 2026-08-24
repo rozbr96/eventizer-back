@@ -20,7 +20,7 @@ describe('POST /events', () => {
     const token = await authenticate(user)
 
     const { status } = await doRequest(token, {
-      organizer_id: user.id,
+      organizer_id: user.id + 1,
       event: {
         title: "Next Year's XMas",
         description: 'Watch movies at Christmas',
@@ -28,7 +28,7 @@ describe('POST /events', () => {
         address: 'Street Name, number, Neighbourhood',
         address_title: "John's Home",
         capacity: 30,
-        price_in_cents: 100_00,
+        price_in_cents: 0,
         metadata: {
           "adult": false,
           "backdrop_path": null,
@@ -53,7 +53,11 @@ describe('POST /events', () => {
 
     const [createdEvent] = await prismaClient.event.findMany()
 
-    expect(createdEvent).toMatchObject({ title: "Next Year's XMas" })
+    expect(createdEvent).toMatchObject({
+      title: "Next Year's XMas",
+      organizer_id: user.id,
+      price_in_cents: 0
+    })
   })
 
   it('fails due to missing authentication', async () => {
@@ -71,7 +75,6 @@ describe('POST /events', () => {
     expect(status).toBe(400)
     expect(body).toStrictEqual({
       details: [
-        '[organizer_id] Invalid input: expected number, received undefined',
         '[event] Invalid input: expected object, received undefined'
       ]
     })
@@ -82,14 +85,12 @@ describe('POST /events', () => {
     const token = await authenticate(user)
 
     const { status, body } = await doRequest(token, {
-      organizer_id: true,
       event: {}
     })
 
     expect(status).toBe(400)
     expect(body).toStrictEqual({
       details: [
-        '[organizer_id] Invalid input: expected number, received boolean',
         '[event.title] Invalid input: expected string, received undefined',
         '[event.description] Invalid input: expected string, received undefined',
         '[event.datetime] Invalid input: expected string, received undefined',
@@ -107,7 +108,6 @@ describe('POST /events', () => {
     const token = await authenticate(user)
 
     const { status, body } = await doRequest(token, {
-      organizer_id: user.id,
       event: {
         price_in_cents: -100,
         datetime: 'invalid datetime',
@@ -118,9 +118,32 @@ describe('POST /events', () => {
     expect(status).toBe(400);
 
     [
-      '[event.price_in_cents] Must be positive',
+      '[event.price_in_cents] Must not be negative',
       '[event.datetime] Invalid ISO datetime',
       '[event.capacity] Must be positive'
     ].forEach((error) => { expect(body.details).toContain(error) })
+  })
+
+  it('fails due to past datetime', async () => {
+    const user = await createUser()
+    const token = await authenticate(user)
+
+    const { status, body } = await doRequest(token, {
+      event: {
+        title: 'Past Event',
+        description: 'Cannot happen in the past',
+        datetime: new Date(Date.now() - 60 * 1000).toISOString(),
+        address: 'Street Name, number, Neighbourhood',
+        address_title: "John's Home",
+        capacity: 30,
+        price_in_cents: 0,
+        metadata: {}
+      }
+    })
+
+    expect(status).toBe(400)
+    expect(body).toStrictEqual({
+      details: ['[event.datetime] Must be a future date']
+    })
   })
 })
