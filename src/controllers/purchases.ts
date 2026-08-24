@@ -2,11 +2,19 @@
 import type { Request, Response } from 'express'
 
 import { PurchaseRepository, TicketRepository } from '@/prisma/repositories/index.js'
-import { StartPurchaseUseCase } from '@/core/use-cases/index.js'
-import { AdvancePurchaseStep } from '@/core/use-cases/purchase/advance-step.js'
+import { AdvancePurchaseStep, GetPurchaseUseCase, StartPurchaseUseCase } from '@/core/use-cases/index.js'
 
 const purchaseRepository = new PurchaseRepository()
 const ticketRepository = new TicketRepository()
+
+const get = (req: Request<{ purchaseId: string }>, resp: Response) => {
+  const purchase_id = Number.parseInt(req.params.purchaseId)
+
+  new GetPurchaseUseCase(purchaseRepository)
+    .execute(purchase_id)
+    .then((purchase) => { resp.json(purchase) })
+    .catch((err) => { resp.status(400).json(err) })
+}
 
 const start = (req: Request, resp: Response) => {
   const purchaseRepository = new PurchaseRepository()
@@ -44,5 +52,4 @@ const pay = (req: Request<{ purchaseId: string }>, resp: Response) => {
     .then(() => { resp.end() })
 }
 
-export default { start, confirmEvent, supplyPersonalInfo, pay }
-
+export default { get, start, confirmEvent, supplyPersonalInfo, pay }

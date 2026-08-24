@@ -18,6 +18,19 @@ export default class implements PurchaseRepository<any> {
     })
   }
 
+  get(id: number): Promise<PurchaseRetrieval<any>> {
+    return new Promise(async (resolve, reject) => {
+      const purchase = await prismaClient
+        .purchase
+        .findUnique({
+          where: { id },
+          include: { client: true, event: { include: { organizer: true } } }
+        })
+
+      purchase ? resolve(purchase) : reject()
+    })
+  }
+
   update(purchaseId: number, data: PurchaseEdition): Promise<PurchaseRetrieval<any>> {
     const eventData: PurchaseUpdateInput = {}
 

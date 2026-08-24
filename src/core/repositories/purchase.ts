@@ -9,6 +9,8 @@ export interface PurchaseCreationProps {
 export default abstract class PurchaseRepository<EventMetadata> {
   abstract create(props: PurchaseCreationProps): Promise<PurchaseRetrieval<EventMetadata>>
 
+  abstract get(purchaseId: number): Promise<PurchaseRetrieval<EventMetadata>>
+
   abstract update(
     purchaseId: number,
     data: PurchaseEdition

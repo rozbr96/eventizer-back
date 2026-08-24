@@ -7,7 +7,9 @@ export interface PurchaseRetrieval<EventMetadata> {
   id: number
   status: PurchaseStatus
   expires_at: Date
+  client_id: number
   client: User
+  event_id: number
   event: EventRetrieval<EventMetadata>
   holder: string
 }
