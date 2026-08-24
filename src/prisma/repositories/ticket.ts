@@ -28,6 +28,13 @@ export default class implements TicketRepository<any> {
     })
   }
 
+  get(id: number): Promise<TicketRetrieval<any> | null> {
+    return prismaClient.ticket.findFirst({
+      where: { id },
+      include: this.commonIncludes()
+    })
+  }
+
   findByCode(code: string): Promise<TicketRetrieval<any> | null> {
     return prismaClient.ticket.findFirst({
       where: { code },
