@@ -24,7 +24,8 @@ const eventCreationSchema = zod.object({
 })
 
 const eventListingParamsSchema = zod.object({
-  page: zod.string().transform((page) => Number.parseInt(page.replaceAll(/\D/g, '') || '1')).optional()
+  page: zod.string().transform((page) => Number.parseInt(page.replaceAll(/\D/g, '') || '1')).optional(),
+  itemsPerPage: zod.string().transform((page) => Number.parseInt(page.replaceAll(/\D/g, '') || '1')).optional()
 })
 
 const eventRetrievalParamsSchema = zod.object({
