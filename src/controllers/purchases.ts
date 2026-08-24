@@ -24,7 +24,7 @@ const start = (req: Request, resp: Response, next: NextFunction) => {
 
   new StartPurchaseUseCase(purchaseRepository)
     .execute({ event_id, client_id })
-    .then(() => { resp.status(201).end() })
+    .then((purchase) => { resp.status(201).json(purchase) })
     .catch((err) => { next(err || {}) })
 }
 
