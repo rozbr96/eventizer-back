@@ -1,7 +1,14 @@
 
 import type { Request, Response, NextFunction } from 'express'
 
-export default (error: any, _req: Request, resp: Response, _next: NextFunction) => {
+export default (error: any, req: Request, resp: Response, _next: NextFunction) => {
+  console.error({
+    error,
+    body: req.body,
+    params: req.params,
+    query: req.query
+  })
+
   const data: { [key: string]: any } = {}
   const status = error.status || 400
 

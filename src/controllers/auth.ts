@@ -1,5 +1,5 @@
 
-import type { Request, Response } from 'express'
+import type { NextFunction, Request, Response } from 'express'
 
 import {
   ActivateUserUseCase,
@@ -11,17 +11,17 @@ import {
 import { UserRepository } from '@/prisma/repositories/index.js'
 import { UserTokenRepository } from '@/redis/repositories/index.js'
 
-const activate = (req: Request, resp: Response) => {
+const activate = (req: Request, resp: Response, next: NextFunction) => {
   const userRepository = new UserRepository()
   const userTokenRepository = new UserTokenRepository()
 
   new ActivateUserUseCase(userRepository, userTokenRepository)
     .execute(req.body)
     .then(() => { resp.end() })
-    .catch((err) => { resp.status(400).json(err) })
+    .catch((err) => { next(err || {}) })
 }
 
-const login = (req: Request, resp: Response) => {
+const login = (req: Request, resp: Response, next: NextFunction) => {
   const userRepository = new UserRepository()
   const userTokenRepository = new UserTokenRepository()
 
@@ -34,22 +34,21 @@ const login = (req: Request, resp: Response) => {
         sameSite: 'lax',
         maxAge: 3600 * 1000,
       }).end()
-    }).catch((err) => { resp.status(400).json(err) })
+    }).catch((err) => { next(err || {}) })
 }
 
-const signup = (req: Request, resp: Response) => {
+const signup = (req: Request, resp: Response, next: NextFunction) => {
   const userRepository = new UserRepository()
   const userTokenRepository = new UserTokenRepository()
 
   new CreateUserUseCase(userRepository)
     .execute(req.body)
-    .then(() => {
+    .then(() =>
       new CreateUserTokenUseCase(userTokenRepository)
         .execute({ email: req.body.email, name: req.body.name, role: 'client' })
-        .then(() => { resp.end() })
-    })
-    .catch((err) => { resp.status(400).json(err) })
+    )
+    .then(() => { resp.end() })
+    .catch((err) => { next(err || {}) })
 }
 
 export default { activate, login, signup }
-
