@@ -7,10 +7,15 @@ import {
   CreateUserTokenUseCase,
   DeleteUserTokenUseCase,
   LoginUserUseCase,
+  SendActivationEmailUseCase,
 } from '@/core/use-cases/index.js'
 
 import { UserRepository } from '@/prisma/repositories/index.js'
-import { UserTokenRepository } from '@/redis/repositories/index.js'
+import { MailerRepository } from '@/lib/mailer/index.js'
+import {
+  UserActivationTokenRepository,
+  UserTokenRepository
+} from '@/redis/repositories/index.js'
 
 const activate = (req: Request, resp: Response, next: NextFunction) => {
   const userRepository = new UserRepository()
@@ -59,13 +64,14 @@ const logout = (req: Request, resp: Response, next: NextFunction) => {
 
 const signup = (req: Request, resp: Response, next: NextFunction) => {
   const userRepository = new UserRepository()
-  const userTokenRepository = new UserTokenRepository()
+  const activationTokenRepository = new UserActivationTokenRepository()
+  const mailerRepository = new MailerRepository()
 
   new CreateUserUseCase(userRepository)
     .execute(req.body)
     .then((user) =>
-      new CreateUserTokenUseCase(userTokenRepository)
-        .execute({ id: user.id, email: user.email, name: user.name, role: user.role })
+      new SendActivationEmailUseCase(activationTokenRepository, mailerRepository)
+        .execute({ user })
     )
     .then(() => { resp.end() })
     .catch((err) => { next(err || {}) })

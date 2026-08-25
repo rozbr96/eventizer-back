@@ -1,13 +1,21 @@
 
 import request from 'supertest'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import app from '@/app.js'
 import prismaClient from '@/prisma/client.js'
 import redisClient from '@/redis/client.js'
 
 describe('POST /auth/signup', () => {
-  it('creates an user and its first token', async () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.restoreAllMocks()
+  })
+
+  it('creates an inactive user and sends an activation email', async () => {
+    const mailSpy = vi.spyOn(console, 'info').mockImplementation(() => {})
+    vi.stubEnv('USER_ACTIVATION_URL', 'https://app.eventizer.test/activate')
+
     const { status } = await request(app).post('/auth/signup').send({
       name: 'John Doe',
       password: 'password',
@@ -15,8 +23,8 @@ describe('POST /auth/signup', () => {
     })
 
     const user = await prismaClient.user.findUnique({ where: { email: 'john.doe@email.com' } })
-    const token = await redisClient.get('john.doe@email.com')
-    const tokenTtl = await redisClient.ttl('john.doe@email.com')
+    const token = await redisClient.get('activation:john.doe@email.com')
+    const tokenTtl = await redisClient.ttl('activation:john.doe@email.com')
 
     expect(status).toBe(200)
     expect(user).toMatchObject({
@@ -30,6 +38,13 @@ describe('POST /auth/signup', () => {
     expect(token).not.toBeNull()
     expect(tokenTtl).toBeGreaterThanOrEqual(3590)
     expect(tokenTtl).toBeLessThanOrEqual(3600)
+    expect(mailSpy).toHaveBeenCalledWith({
+      mail: expect.objectContaining({
+        to: 'john.doe@email.com',
+        subject: 'Activate your Eventizer account',
+        text: expect.stringContaining(`https://app.eventizer.test/activate?email=john.doe%40email.com&token=${token}`)
+      })
+    })
   })
 
   it('creates an inactive client user regardless of incoming role and active data', async () => {
