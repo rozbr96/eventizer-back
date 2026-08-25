@@ -5,6 +5,8 @@ export * from './ticket-verification.js'
 
 export { default as UserRepository } from './user.js'
 export { default as UserTokenRepository } from './user-token.js'
+export { default as MailerRepository } from './mailer.js'
+export type { MailMessage } from './mailer.js'
 export { default as SearchResultRepository } from './search-result.js'
 export { default as EventRepository } from './event.js'
 export { default as PurchaseRepository } from './purchase.js'
