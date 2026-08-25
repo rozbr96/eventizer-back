@@ -2,7 +2,7 @@
 DOCKER := docker compose
 
 api:
-	@${DOCKER} up -d api
+	@${DOCKER} up -d api mailcatcher
 
 db:
 	@${DOCKER} up -d db
