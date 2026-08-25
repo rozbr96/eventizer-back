@@ -4,7 +4,6 @@ import type { NextFunction, Request, Response } from 'express'
 import {
   ActivateUserUseCase,
   CreateUserUseCase,
-  CreateUserTokenUseCase,
   DeleteUserTokenUseCase,
   LoginUserUseCase,
   SendActivationEmailUseCase,
@@ -19,9 +18,9 @@ import {
 
 const activate = (req: Request, resp: Response, next: NextFunction) => {
   const userRepository = new UserRepository()
-  const userTokenRepository = new UserTokenRepository()
+  const activationTokenRepository = new UserActivationTokenRepository()
 
-  new ActivateUserUseCase(userRepository, userTokenRepository)
+  new ActivateUserUseCase(userRepository, activationTokenRepository)
     .execute(req.body)
     .then(() => { resp.end() })
     .catch((err) => { next(err || {}) })

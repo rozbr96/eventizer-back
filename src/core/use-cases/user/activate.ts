@@ -1,7 +1,7 @@
 
 import type {
+  UserActivationTokenRepository,
   UserRepository,
-  UserTokenRepository
 } from '@/core/repositories/index.js'
 
 interface ActivateUserUseCaseProps {
@@ -12,27 +12,20 @@ interface ActivateUserUseCaseProps {
 export class ActivateUserUseCase {
   constructor(
     private userRepository: UserRepository,
-    private userTokenRepository: UserTokenRepository
+    private activationTokenRepository: UserActivationTokenRepository
   ) { }
 
-  execute(props: ActivateUserUseCaseProps) {
-    return new Promise((resolve, reject) => {
-      const promises = [
-        this.userRepository.findByEmail(props.email),
-        this.userTokenRepository.get(props.email)
-      ]
+  async execute(props: ActivateUserUseCaseProps) {
+    const [user, token] = await Promise.all([
+      this.userRepository.findByEmail(props.email),
+      this.activationTokenRepository.get(props.email)
+    ])
 
-      Promise
-        .all(promises)
-        .then(([user, token]) => {
-          if (!user || !token || token != props.token) return reject()
+    if (!user || !token || token != props.token) throw {}
 
-          this.userRepository
-            .update(props.email, { active: true })
-            .then(resolve)
-            .catch(reject)
-        })
-    })
+    const updatedUser = await this.userRepository.update(props.email, { active: true })
+    await this.activationTokenRepository.delete(props.email)
 
+    return updatedUser
   }
 }

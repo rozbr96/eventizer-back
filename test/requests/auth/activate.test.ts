@@ -11,20 +11,22 @@ describe('POST /auth/activate', () => {
     const email = 'user@mail.com', token = 'activation-token'
 
     await prismaClient.user.create({ data: { email, password: 'pass', name: 'User', active: false } })
-    await redisClient.set(email, token)
+    await redisClient.set(`activation:${email}`, token)
 
     const { status } = await request(app).post('/auth/activate').send({ email, token })
     const user = await prismaClient.user.findUnique({ where: { email } })
+    const storedToken = await redisClient.get(`activation:${email}`)
 
     expect(status).toBe(200)
     expect(user?.active).toBe(true)
+    expect(storedToken).toBe(null)
   })
 
   it('fails to activate due to invalid token', async () => {
     const email = 'user@email.com', token = 'activation-token'
 
     await prismaClient.user.create({ data: { email, password: 'pass', name: 'User', active: false } })
-    await redisClient.set(email, token)
+    await redisClient.set(`activation:${email}`, token)
 
     const { status } = await request(app).post('/auth/activate').send({ email, token: 'invalid-token' })
     const user = await prismaClient.user.findUnique({ where: { email } })
